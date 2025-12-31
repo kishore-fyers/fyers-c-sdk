@@ -23,6 +23,7 @@ struct fyers_session {
     char* secret_key;
     char* grant_type;
     char* auth_code;
+    char* access_token;
     fyers_http_client_t* http_client;
     fyers_logger_t* logger;
 };
@@ -51,6 +52,7 @@ fyers_session_t* fyers_session_create(const char* client_id,
     session->secret_key = strdup(secret_key);
     session->grant_type = strdup(grant_type);
     session->auth_code = NULL;
+    session->access_token = NULL;
 
     session->logger = fyers_logger_create("FyersSession", FYERS_LOG_INFO, NULL);
     session->http_client = fyers_http_client_create(session->logger, session->logger);
@@ -71,6 +73,9 @@ void fyers_session_destroy(fyers_session_t* session) {
     free(session->grant_type);
     if (session->auth_code) {
         free(session->auth_code);
+    }
+    if (session->access_token) {
+        free(session->access_token);
     }
 
     if (session->http_client) {
@@ -192,6 +197,42 @@ fyers_error_t fyers_session_set_authcode(fyers_session_t* session,
     return FYERS_OK;
 }
 
+fyers_error_t fyers_session_set_access_token(fyers_session_t* session,
+                                             const char* access_token) {
+    if (!session || !access_token) {
+        return FYERS_ERROR_INVALID_PARAM;
+    }
+
+    if (session->access_token) {
+        free(session->access_token);
+    }
+
+    session->access_token = strdup(access_token);
+    if (!session->access_token) {
+        return FYERS_ERROR_MEMORY;
+    }
+    
+    // Trim whitespace
+    char* start = session->access_token;
+    char* end = start + strlen(start) - 1;
+    while (end > start && (*end == ' ' || *end == '\t' || *end == '\n' || *end == '\r')) {
+        *end-- = '\0';
+    }
+    while (*start == ' ' || *start == '\t' || *start == '\n' || *start == '\r') {
+        start++;
+    }
+    if (start != session->access_token) {
+        memmove(session->access_token, start, strlen(start) + 1);
+    }
+    
+    if (session->logger) {
+        fyers_logger_debug(session->logger, "Access token set (length: %zu)", 
+                          strlen(session->access_token));
+    }
+    
+    return FYERS_OK;
+}
+
 static void compute_sha256(const char* input, unsigned char* output) {
     EVP_MD_CTX* ctx = EVP_MD_CTX_new();
     EVP_DigestInit_ex(ctx, EVP_sha256(), NULL);
@@ -301,7 +342,26 @@ fyers_error_t generate_token(fyers_session_t* session) {
     strncpy(access_token_buffer, access_token, buffer_size - 1);
     access_token_buffer[buffer_size - 1] = '\0';
 
+    if (session->access_token) {
+        free(session->access_token);
+    }
+    session->access_token = strdup(access_token);
+
     cJSON_Delete(response_json);
     return FYERS_OK;
+}
+
+const char* fyers_session_get_client_id(fyers_session_t* session) {
+    if (!session) {
+        return NULL;
+    }
+    return session->client_id;
+}
+
+const char* fyers_session_get_access_token(fyers_session_t* session) {
+    if (!session) {
+        return NULL;
+    }
+    return session->access_token;
 }
 

@@ -91,9 +91,16 @@ fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
     struct curl_slist* headers = NULL;
 
     headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "version: 3");
-    char auth_header[512];
-    snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    headers = curl_slist_append(headers, "version: 3");    
+
+    char auth_header[1024];
+    int written = snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    if (written < 0 || (size_t)written >= sizeof(auth_header)) {
+        if (client->request_logger) {
+            fyers_logger_error(client->request_logger, "WARNING: Authorization header truncated! Required: %d, Buffer: %zu", 
+                             written, sizeof(auth_header));
+        }
+    }
     headers = curl_slist_append(headers, auth_header);
 
     curl_easy_setopt(client->curl, CURLOPT_URL, url);
@@ -133,7 +140,13 @@ fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
         }
     } else {
         response->error = FYERS_ERROR;
-        // Don't log HTTP errors here - let the caller handle the response
+    }
+
+    if (response->data && response->size > 0 && client->request_logger) {
+        if (res != CURLE_OK || response->status_code >= 400) {
+            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
+                              response->status_code, (int)response->size, response->data);
+        }
     }
 
     curl_slist_free_all(headers);
@@ -157,8 +170,14 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
     // This allows unauthenticated requests like validate-authcode
     if (header && strlen(header) > 0) {
         headers = curl_slist_append(headers, "version: 3");
-        char auth_header[512];
-        snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+        char auth_header[1024];
+        int written = snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+        if (written < 0 || (size_t)written >= sizeof(auth_header)) {
+            if (client->request_logger) {
+                fyers_logger_error(client->request_logger, "WARNING: Authorization header truncated! Required: %d, Buffer: %zu", 
+                                 written, sizeof(auth_header));
+            }
+        }
         headers = curl_slist_append(headers, auth_header);
     }
 
@@ -203,7 +222,13 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
         }
     } else {
         response->error = FYERS_ERROR;
-        // Don't log HTTP errors here - let the caller handle the response
+    }
+
+    if (response->data && response->size > 0 && client->request_logger) {
+        if (res != CURLE_OK || response->status_code >= 400) {
+            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
+                              response->status_code, (int)response->size, response->data);
+        }
     }
 
     curl_slist_free_all(headers);
@@ -223,8 +248,14 @@ fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
 
     headers = curl_slist_append(headers, "Content-Type: application/json");
     headers = curl_slist_append(headers, "version: 3");
-    char auth_header[512];
-    snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    char auth_header[1024];
+    int written = snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    if (written < 0 || (size_t)written >= sizeof(auth_header)) {
+        if (client->request_logger) {
+            fyers_logger_error(client->request_logger, "WARNING: Authorization header truncated! Required: %d, Buffer: %zu", 
+                             written, sizeof(auth_header));
+        }
+    }
     headers = curl_slist_append(headers, auth_header);
 
     curl_easy_setopt(client->curl, CURLOPT_URL, url);
@@ -259,10 +290,20 @@ fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
 
     if (res != CURLE_OK) {
         response->error = FYERS_ERROR_NETWORK;
+        if (client->api_logger) {
+            fyers_logger_error(client->api_logger, "CURL error: %s", client->error_buffer);
+        }
     } else if (status_code >= 200 && status_code < 300) {
         response->error = FYERS_OK;
     } else {
         response->error = FYERS_ERROR;
+    }
+
+    if (response->data && response->size > 0 && client->request_logger) {
+        if (res != CURLE_OK || response->status_code >= 400) {
+            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
+                              response->status_code, (int)response->size, response->data);
+        }
     }
 
     curl_slist_free_all(headers);
@@ -282,8 +323,14 @@ fyers_response_t* fyers_http_client_delete(fyers_http_client_t* client,
 
     headers = curl_slist_append(headers, "Content-Type: application/json");
     headers = curl_slist_append(headers, "version: 3");
-    char auth_header[512];
-    snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    char auth_header[1024];
+    int written = snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    if (written < 0 || (size_t)written >= sizeof(auth_header)) {
+        if (client->request_logger) {
+            fyers_logger_error(client->request_logger, "WARNING: Authorization header truncated! Required: %d, Buffer: %zu", 
+                             written, sizeof(auth_header));
+        }
+    }
     headers = curl_slist_append(headers, auth_header);
 
     curl_easy_setopt(client->curl, CURLOPT_URL, url);
@@ -310,10 +357,20 @@ fyers_response_t* fyers_http_client_delete(fyers_http_client_t* client,
 
     if (res != CURLE_OK) {
         response->error = FYERS_ERROR_NETWORK;
+        if (client->api_logger) {
+            fyers_logger_error(client->api_logger, "CURL error: %s", client->error_buffer);
+        }
     } else if (status_code >= 200 && status_code < 300) {
         response->error = FYERS_OK;
     } else {
         response->error = FYERS_ERROR;
+    }
+
+    if (response->data && response->size > 0 && client->request_logger) {
+        if (res != CURLE_OK || response->status_code >= 400) {
+            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
+                              response->status_code, (int)response->size, response->data);
+        }
     }
 
     curl_slist_free_all(headers);
@@ -333,8 +390,14 @@ fyers_response_t* fyers_http_client_put(fyers_http_client_t* client,
 
     headers = curl_slist_append(headers, "Content-Type: application/json");
     headers = curl_slist_append(headers, "version: 3");
-    char auth_header[512];
-    snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    char auth_header[1024];
+    int written = snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+    if (written < 0 || (size_t)written >= sizeof(auth_header)) {
+        if (client->request_logger) {
+            fyers_logger_error(client->request_logger, "WARNING: Authorization header truncated! Required: %d, Buffer: %zu", 
+                             written, sizeof(auth_header));
+        }
+    }
     headers = curl_slist_append(headers, auth_header);
 
     curl_easy_setopt(client->curl, CURLOPT_URL, url);
@@ -361,10 +424,20 @@ fyers_response_t* fyers_http_client_put(fyers_http_client_t* client,
 
     if (res != CURLE_OK) {
         response->error = FYERS_ERROR_NETWORK;
+        if (client->api_logger) {
+            fyers_logger_error(client->api_logger, "CURL error: %s", client->error_buffer);
+        }
     } else if (status_code >= 200 && status_code < 300) {
         response->error = FYERS_OK;
     } else {
         response->error = FYERS_ERROR;
+    }
+
+    if (response->data && response->size > 0 && client->request_logger) {
+        if (res != CURLE_OK || response->status_code >= 400) {
+            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
+                              response->status_code, (int)response->size, response->data);
+        }
     }
 
     curl_slist_free_all(headers);

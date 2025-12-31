@@ -51,12 +51,35 @@ fyers_error_t fyers_session_set_authcode(fyers_session_t* session,
                                           const char* auth_code);
 
 /**
+ * @brief Set access token manually
+ * @param session Session instance
+ * @param access_token Access token string
+ * @return FYERS_OK on success
+ */
+fyers_error_t fyers_session_set_access_token(fyers_session_t* session,
+                                             const char* access_token);
+
+/**
  * @brief Generate access token from auth code
  * @param session Session instance
  * @return FYERS_OK on success
  * 
  */
 fyers_error_t generate_token(fyers_session_t* session);
+
+/**
+ * @brief Get client ID from session
+ * @param session Session instance
+ * @return Client ID string or NULL
+ */
+const char* fyers_session_get_client_id(fyers_session_t* session);
+
+/**
+ * @brief Get access token from session
+ * @param session Session instance
+ * @return Access token string or NULL if not generated yet
+ */
+const char* fyers_session_get_access_token(fyers_session_t* session);
 
 #ifdef __cplusplus
 }

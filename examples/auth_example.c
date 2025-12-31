@@ -8,6 +8,7 @@
 #include <string.h>
 #include "fyers_api.h"
 #include "fyers_session.h"
+#include "fyers_model.h"
 
 
 void fy_generate_authcode(fyers_session_t* session) {
@@ -26,6 +27,39 @@ void fy_generate_token(fyers_session_t* session, const char* auth_code) {
         fyers_session_destroy(session);
         fyers_cleanup();
     }
+}
+
+void fy_get_profile(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCcFZSSHhtTThHT1RjSnVLM2FZRHp4VUFVdGRpUHFKM3pyaDBCdzVWd3AwNlVlMkdQSVJhdW5lUmk2aXJjRFRORDRrLThoc3FaeWd3WFlQSUczbmZHSF9SMW9nY3poemczVjl3Y3BOamx4cWRIcl9oYz0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzY3MjI3NDAwLCJpYXQiOjE3NjcxODI4MzMsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzE4MjgzMywic3ViIjoiYWNjZXNzX3Rva2VuIn0.wsJ4qlwv079H6ck0_-jnWoehSrPkeK5zGcu6lD2_VCY");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return;
+    }
+    
+    
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+    
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+    
+    fyers_response_t* response = fyers_model_get_profile(model);
+    if (response && response->error == FYERS_OK && response->data) {
+        printf("%.*s\n", (int)response->size, response->data);
+    }
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
 }
 
 int main() {
@@ -51,6 +85,7 @@ int main() {
 
     // fy_generate_authcode(session); // generate auth code
     // fy_generate_token(session, auth_code); // generate token
+    // fy_get_profile(session); // get profile
 
     fyers_session_destroy(session);
     fyers_cleanup();

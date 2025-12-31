@@ -5,12 +5,14 @@ Official C/C++ SDK for the Fyers Trading API v3. This SDK provides a C-style API
 ## Features
 
 - ✅ Full REST API support (trading, market data, user info)
-- ✅ OAuth2 authentication flow
+- ✅ OAuth2 authentication flow with simplified API
+- ✅ Auto-initialization (no manual init required)
 - ✅ WebSocket support for real-time data (Data, Order, TBT sockets)
 - ✅ Synchronous and asynchronous API calls
 - ✅ Cross-platform (Linux, macOS, Windows)
 - ✅ Thread-safe logging
 - ✅ C++17 compatible
+- ✅ Clean error handling (errors logged only, success responses via printf)
 
 ## Requirements
 
@@ -64,8 +66,8 @@ sudo make install
 #include "fyers_api.h"
 #include "fyers_session.h"
 
-// Initialize SDK
-fyers_init();
+// SDK auto-initializes, but you can call fyers_init() explicitly if needed
+// fyers_init();  // Optional
 
 // Create session (uses default values for response_type, state, and grant_type)
 fyers_session_t* session = fyers_session_create(
@@ -74,19 +76,26 @@ fyers_session_t* session = fyers_session_create(
     "YOUR_SECRET_KEY"
 );
 
-// Generate auth URL
-char auth_url[2048];
-fyers_session_generate_authcode(session, auth_url, sizeof(auth_url));
-printf("Visit: %s\n", auth_url);
+// Generate auth URL (prints URL directly to stdout)
+generate_authcode(session);
+// User visits the printed URL and authorizes
 
 // After user authorizes, get auth_code from redirect URI
-// Then set it and generate access token
+// Then set it and generate access token (token is stored internally)
 fyers_session_set_authcode(session, "AUTH_CODE_FROM_REDIRECT");
-char access_token[512];
-fyers_session_generate_token(session, access_token, sizeof(access_token));
+generate_token(session);
+
+// Access token is now stored in the session
+// You can retrieve it using:
+const char* access_token = fyers_session_get_access_token(session);
+const char* client_id = fyers_session_get_client_id(session);
+
+// Or manually set an access token if you already have one:
+// fyers_session_set_access_token(session, "YOUR_ACCESS_TOKEN");
 
 // Cleanup
 fyers_session_destroy(session);
+fyers_cleanup();  // Optional: cleans up global resources
 ```
 
 ### 2. Using the API
@@ -94,11 +103,32 @@ fyers_session_destroy(session);
 ```c
 #include "fyers_api.h"
 #include "fyers_model.h"
+#include "fyers_session.h"
+
+// Option 1: Using session (recommended)
+fyers_session_t* session = fyers_session_create(
+    "YOUR_CLIENT_ID",
+    "YOUR_REDIRECT_URI",
+    "YOUR_SECRET_KEY"
+);
+
+// After generating token, get credentials from session
+const char* client_id = fyers_session_get_client_id(session);
+const char* access_token = fyers_session_get_access_token(session);
 
 // Create model instance
 fyers_model_t* model = fyers_model_create(
+    client_id,
+    access_token,  // Just the access token (not "client_id:token")
+    false,  // is_async
+    NULL,   // log_path
+    FYERS_LOG_INFO
+);
+
+// Option 2: Direct model creation (if you already have credentials)
+fyers_model_t* model = fyers_model_create(
     "YOUR_CLIENT_ID",
-    "YOUR_CLIENT_ID:ACCESS_TOKEN",
+    "YOUR_ACCESS_TOKEN",  // Just the access token
     false,  // is_async
     NULL,   // log_path
     FYERS_LOG_INFO
@@ -190,18 +220,21 @@ fyers_data_socket_destroy(socket);
 
 ### Core API
 
-- `fyers_init()` - Initialize the SDK
-- `fyers_cleanup()` - Cleanup SDK resources
+- `fyers_init()` - Initialize the SDK (optional - SDK auto-initializes)
+- `fyers_cleanup()` - Cleanup SDK resources (optional)
 - `fyers_set_log_callback()` - Set global log callback
 - `fyers_set_log_level()` - Set log level
 
 ### Session Management
 
-- `fyers_session_create()` - Create session instance
+- `fyers_session_create(client_id, redirect_uri, secret_key)` - Create session instance
 - `fyers_session_destroy()` - Destroy session
-- `fyers_session_generate_authcode()` - Generate OAuth URL
-- `fyers_session_set_authcode()` - Set auth code
-- `fyers_session_generate_token()` - Generate access token
+- `generate_authcode(session)` - Generate and print OAuth URL
+- `fyers_session_set_authcode(session, auth_code)` - Set auth code from redirect URI
+- `generate_token(session)` - Generate access token (stores internally)
+- `fyers_session_set_access_token(session, token)` - Manually set access token
+- `fyers_session_get_client_id(session)` - Get client ID from session
+- `fyers_session_get_access_token(session)` - Get access token from session
 
 ### Trading APIs
 
