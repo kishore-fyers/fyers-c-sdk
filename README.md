@@ -67,14 +67,11 @@ sudo make install
 // Initialize SDK
 fyers_init();
 
-// Create session
+// Create session (uses default values for response_type, state, and grant_type)
 fyers_session_t* session = fyers_session_create(
     "YOUR_CLIENT_ID",
     "YOUR_REDIRECT_URI",
-    "code",
-    "sample_state",
-    "YOUR_SECRET_KEY",
-    "authorization_code"
+    "YOUR_SECRET_KEY"
 );
 
 // Generate auth URL

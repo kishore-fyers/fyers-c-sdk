@@ -43,6 +43,9 @@ static size_t write_callback(void* contents, size_t size, size_t nmemb, void* us
 
 fyers_http_client_t* fyers_http_client_create(fyers_logger_t* api_logger,
                                                  fyers_logger_t* request_logger) {
+    // Auto-initialize curl if not already done
+    fyers_ensure_init();
+    
     fyers_http_client_t* client = (fyers_http_client_t*)malloc(sizeof(fyers_http_client_t));
     if (!client) {
         return NULL;
@@ -130,10 +133,7 @@ fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
         }
     } else {
         response->error = FYERS_ERROR;
-        if (client->api_logger) {
-            fyers_logger_error(client->api_logger, "HTTP error: %ld, Response: %.*s",
-                               status_code, (int)response->size, response->data);
-        }
+        // Don't log HTTP errors here - let the caller handle the response
     }
 
     curl_slist_free_all(headers);
@@ -144,7 +144,7 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
                                           const char* url,
                                           const char* header,
                                           const char* data) {
-    if (!client || !url || !header) {
+    if (!client || !url) {
         return NULL;
     }
 
@@ -152,10 +152,15 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
     struct curl_slist* headers = NULL;
 
     headers = curl_slist_append(headers, "Content-Type: application/json");
-    headers = curl_slist_append(headers, "version: 3");
-    char auth_header[512];
-    snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
-    headers = curl_slist_append(headers, auth_header);
+    
+    // Only add Authorization and version headers if header is provided and not empty
+    // This allows unauthenticated requests like validate-authcode
+    if (header && strlen(header) > 0) {
+        headers = curl_slist_append(headers, "version: 3");
+        char auth_header[512];
+        snprintf(auth_header, sizeof(auth_header), "Authorization: %s", header);
+        headers = curl_slist_append(headers, auth_header);
+    }
 
     curl_easy_setopt(client->curl, CURLOPT_URL, url);
     curl_easy_setopt(client->curl, CURLOPT_HTTPHEADER, headers);
@@ -198,10 +203,7 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
         }
     } else {
         response->error = FYERS_ERROR;
-        if (client->api_logger) {
-            fyers_logger_error(client->api_logger, "HTTP error: %ld, Response: %.*s",
-                               status_code, (int)response->size, response->data);
-        }
+        // Don't log HTTP errors here - let the caller handle the response
     }
 
     curl_slist_free_all(headers);

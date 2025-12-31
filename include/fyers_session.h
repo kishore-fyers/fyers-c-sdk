@@ -16,18 +16,15 @@ extern "C" {
  * @brief Create a new session instance
  * @param client_id Application client ID
  * @param redirect_uri Redirect URI registered with the app
- * @param response_type Response type (should be "code")
- * @param state State parameter for session management
  * @param secret_key Application secret key
- * @param grant_type Grant type (should be "authorization_code")
  * @return Session instance or NULL on error
+ * 
+ * Note: Uses default values for response_type ("code"), state ("sample_state"), 
+ *       and grant_type ("authorization_code")
  */
 fyers_session_t* fyers_session_create(const char* client_id,
                                        const char* redirect_uri,
-                                       const char* response_type,
-                                       const char* state,
-                                       const char* secret_key,
-                                       const char* grant_type);
+                                       const char* secret_key);
 
 /**
  * @brief Destroy session instance
@@ -42,9 +39,7 @@ void fyers_session_destroy(fyers_session_t* session);
  * @param buffer_size Size of the buffer
  * @return FYERS_OK on success
  */
-fyers_error_t fyers_session_generate_authcode(fyers_session_t* session,
-                                               char* url_buffer,
-                                               size_t buffer_size);
+fyers_error_t fyers_session_generate_authcode(fyers_session_t* session);
 
 /**
  * @brief Set auth code received from OAuth callback

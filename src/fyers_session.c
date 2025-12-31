@@ -29,11 +29,8 @@ struct fyers_session {
 
 fyers_session_t* fyers_session_create(const char* client_id,
                                        const char* redirect_uri,
-                                       const char* response_type,
-                                       const char* state,
-                                       const char* secret_key,
-                                       const char* grant_type) {
-    if (!client_id || !redirect_uri || !response_type || !state || !secret_key || !grant_type) {
+                                       const char* secret_key) {
+    if (!client_id || !redirect_uri || !secret_key) {
         return NULL;
     }
 
@@ -41,6 +38,11 @@ fyers_session_t* fyers_session_create(const char* client_id,
     if (!session) {
         return NULL;
     }
+
+    // Use default values for common OAuth parameters
+    const char* response_type = "code";
+    const char* state = "sample_state";
+    const char* grant_type = "authorization_code";
 
     session->client_id = strdup(client_id);
     session->redirect_uri = strdup(redirect_uri);
@@ -81,19 +83,20 @@ void fyers_session_destroy(fyers_session_t* session) {
     free(session);
 }
 
-fyers_error_t fyers_session_generate_authcode(fyers_session_t* session,
-                                               char* url_buffer,
-                                               size_t buffer_size) {
-    if (!session || !url_buffer || buffer_size == 0) {
+fyers_error_t fyers_session_generate_authcode(fyers_session_t* session
+                                              ) {
+    char url_buffer[2048];
+    size_t buffer_size = sizeof(url_buffer);
+    
+    if (!session) {
         return FYERS_ERROR_INVALID_PARAM;
     }
-
-    // Build URL with URL-encoded parameters
+    
     CURL* curl = curl_easy_init();
     if (!curl) {
-        return FYERS_ERROR;
+        return FYERS_ERROR_MEMORY;
     }
-
+    
     char* encoded_client_id = curl_easy_escape(curl, session->client_id, 0);
     char* encoded_redirect_uri = curl_easy_escape(curl, session->redirect_uri, 0);
     char* encoded_response_type = curl_easy_escape(curl, session->response_type, 0);
@@ -207,7 +210,6 @@ fyers_error_t fyers_session_generate_token(fyers_session_t* session,
         return FYERS_ERROR_INVALID_PARAM;
     }
 
-    // Compute appIdHash
     char hash_input[512];
     snprintf(hash_input, sizeof(hash_input), "%s:%s", session->client_id, session->secret_key);
 
@@ -217,7 +219,6 @@ fyers_error_t fyers_session_generate_token(fyers_session_t* session,
     char hash_hex[65];
     bytes_to_hex(hash, 32, hash_hex);
 
-    // Create JSON request
     cJSON* json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, "grant_type", session->grant_type);
     cJSON_AddStringToObject(json, "appIdHash", hash_hex);
@@ -230,45 +231,53 @@ fyers_error_t fyers_session_generate_token(fyers_session_t* session,
         return FYERS_ERROR_MEMORY;
     }
 
-    // Log request details for debugging
     if (session->logger) {
-        fyers_logger_debug(session->logger, "Request JSON: %s", json_string);
-        fyers_logger_debug(session->logger, "Auth code length: %zu", strlen(session->auth_code));
+        fyers_logger_debug(session->logger, "Request URL: %s%s", FYERS_API_BASE_URL, FYERS_ENDPOINT_VALIDATE_AUTHCODE);
+        fyers_logger_debug(session->logger, "grant_type: %s", session->grant_type);
+        fyers_logger_debug(session->logger, "Auth code: %s", session->auth_code);
+        fyers_logger_debug(session->logger, "appIdHash: %s", hash_hex);
     }
 
-    // Make POST request
     char url[512];
     snprintf(url, sizeof(url), "%s%s", FYERS_API_BASE_URL, FYERS_ENDPOINT_VALIDATE_AUTHCODE);
 
-    fyers_response_t* response = fyers_http_client_post(session->http_client, url, "", json_string);
+    fyers_response_t* response = NULL;
+    cJSON* response_json = NULL;
+    fyers_error_t result = FYERS_OK;
+
+    response = fyers_http_client_post(session->http_client, url, "", json_string);
     free(json_string);
 
     if (!response) {
+        printf("Failed to generate access token\n");
         if (session->logger) {
             fyers_logger_error(session->logger, "Failed to get response from server");
         }
         return FYERS_ERROR_NETWORK;
     }
 
+    if (response->data && response->size > 0) {
+        printf("%.*s\n", (int)response->size, response->data);
+    }
+
     if (response->error != FYERS_OK || response->status_code != 200) {
-        if (session->logger && response->data) {
-            fyers_logger_error(session->logger, "Token generation failed. Status: %d, Response: %.*s",
-                              response->status_code, (int)response->size, response->data);
-        }
+        // API response already printed above, just return error
         fyers_response_destroy(response);
         return response->error != FYERS_OK ? response->error : FYERS_ERROR_AUTH;
     }
 
-    // Parse response
-    cJSON* response_json = cJSON_Parse(response->data);
+    response_json = cJSON_Parse(response->data);
     fyers_response_destroy(response);
+    response = NULL; 
 
     if (!response_json) {
+        printf("Failed to generate access token\n");
         return FYERS_ERROR;
     }
 
     cJSON* access_token_item = cJSON_GetObjectItem(response_json, "access_token");
     if (!access_token_item || !cJSON_IsString(access_token_item)) {
+        printf("Failed to generate access token\n");
         cJSON_Delete(response_json);
         return FYERS_ERROR;
     }
@@ -277,6 +286,7 @@ fyers_error_t fyers_session_generate_token(fyers_session_t* session,
     size_t token_len = strlen(access_token);
 
     if (token_len >= buffer_size) {
+        printf("Failed to generate access token\n");
         cJSON_Delete(response_json);
         return FYERS_ERROR_INVALID_PARAM;
     }

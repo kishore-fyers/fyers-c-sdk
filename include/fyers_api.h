@@ -90,6 +90,7 @@ typedef struct {
 // Initialize and cleanup
 fyers_error_t fyers_init(void);
 void fyers_cleanup(void);
+void fyers_ensure_init(void);  // Auto-initialization (called internally)
 
 // Set global log callback
 void fyers_set_log_callback(fyers_log_callback_t callback);
