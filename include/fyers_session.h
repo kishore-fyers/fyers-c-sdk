@@ -39,7 +39,7 @@ void fyers_session_destroy(fyers_session_t* session);
  * @param buffer_size Size of the buffer
  * @return FYERS_OK on success
  */
-fyers_error_t fyers_session_generate_authcode(fyers_session_t* session);
+fyers_error_t generate_authcode(fyers_session_t* session);
 
 /**
  * @brief Set auth code received from OAuth callback
@@ -53,13 +53,10 @@ fyers_error_t fyers_session_set_authcode(fyers_session_t* session,
 /**
  * @brief Generate access token from auth code
  * @param session Session instance
- * @param access_token_buffer Buffer to store access token
- * @param buffer_size Size of the buffer
  * @return FYERS_OK on success
+ * 
  */
-fyers_error_t fyers_session_generate_token(fyers_session_t* session,
-                                            char* access_token_buffer,
-                                            size_t buffer_size);
+fyers_error_t generate_token(fyers_session_t* session);
 
 #ifdef __cplusplus
 }

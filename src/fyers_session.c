@@ -83,17 +83,19 @@ void fyers_session_destroy(fyers_session_t* session) {
     free(session);
 }
 
-fyers_error_t fyers_session_generate_authcode(fyers_session_t* session
+fyers_error_t generate_authcode(fyers_session_t* session
                                               ) {
     char url_buffer[2048];
     size_t buffer_size = sizeof(url_buffer);
     
     if (!session) {
+        printf("session is null\n");
         return FYERS_ERROR_INVALID_PARAM;
     }
     
     CURL* curl = curl_easy_init();
     if (!curl) {
+        printf("curl is null\n");
         return FYERS_ERROR_MEMORY;
     }
     
@@ -108,6 +110,7 @@ fyers_error_t fyers_session_generate_authcode(fyers_session_t* session
         curl_free(encoded_response_type);
         curl_free(encoded_state);
         curl_easy_cleanup(curl);
+        printf("some encoded string is/are null\n");
         return FYERS_ERROR_MEMORY;
     }
 
@@ -118,6 +121,8 @@ fyers_error_t fyers_session_generate_authcode(fyers_session_t* session
              encoded_redirect_uri,
              encoded_response_type,
              encoded_state);
+
+    printf("%s\n", url_buffer);
 
     curl_free(encoded_client_id);
     curl_free(encoded_redirect_uri);
@@ -203,12 +208,14 @@ static void bytes_to_hex(const unsigned char* bytes, size_t len, char* hex) {
     hex[len * 2] = '\0';
 }
 
-fyers_error_t fyers_session_generate_token(fyers_session_t* session,
-                                           char* access_token_buffer,
-                                           size_t buffer_size) {
-    if (!session || !session->auth_code || !access_token_buffer || buffer_size == 0) {
+fyers_error_t generate_token(fyers_session_t* session) {
+    if (!session || !session->auth_code) {
+        printf("session or auth code is null\n");
         return FYERS_ERROR_INVALID_PARAM;
     }
+    
+    char access_token_buffer[1024];
+    size_t buffer_size = sizeof(access_token_buffer);
 
     char hash_input[512];
     snprintf(hash_input, sizeof(hash_input), "%s:%s", session->client_id, session->secret_key);

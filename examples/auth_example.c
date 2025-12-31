@@ -9,11 +9,32 @@
 #include "fyers_api.h"
 #include "fyers_session.h"
 
+
+void fy_generate_authcode(fyers_session_t* session) {
+    if (generate_authcode(session) != FYERS_OK) {
+        fprintf(stderr, "Failed to generate auth URL\n");
+        fyers_session_destroy(session);
+        fyers_cleanup();
+    }
+}
+
+void fy_generate_token(fyers_session_t* session, const char* auth_code) {
+    fyers_session_set_authcode(session, auth_code);
+
+    if (generate_token(session) != FYERS_OK) {
+        fprintf(stderr, "Failed to generate token\n");
+        fyers_session_destroy(session);
+        fyers_cleanup();
+    }
+}
+
 int main() {
     // Replace with your app credentials
     const char* client_id = "M0R4WW1PYU-100";
     const char* redirect_uri = "https://trade.fyers.in/api-login/redirect-uri/index.html";
     const char* secret_key = "XKCP7PAISD";
+    const char* auth_code = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJNMFI0V1cxUFlVIiwidXVpZCI6Ijg4N2ZiNTUxMDdhMzRmMGM5Y2M0MzZlYjg0ZjFiMjNhIiwiaXBBZGRyIjoiIiwibm9uY2UiOiIiLCJzY29wZSI6IiIsImRpc3BsYXlfbmFtZSI6IllLMDQzOTEiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImF1ZCI6IltcImQ6MVwiLFwiZDoyXCIsXCJ4OjBcIixcIng6MVwiLFwieDoyXCJdIiwiZXhwIjoxNzY3MjEyNjMwLCJpYXQiOjE3NjcxODI2MzAsImlzcyI6ImFwaS5sb2dpbi5meWVycy5pbiIsIm5iZiI6MTc2NzE4MjYzMCwic3ViIjoiYXV0aF9jb2RlIn0.y7sB3C0y4FzrEhaqpB_qiwN5GMAKBt64Y0GVQFIy7mo";
+    const char* access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCcFZSSHhtTThHT1RjSnVLM2FZRHp4VUFVdGRpUHFKM3pyaDBCdzVWd3AwNlVlMkdQSVJhdW5lUmk2aXJjRFRORDRrLThoc3FaeWd3WFlQSUczbmZHSF9SMW9nY3poemczVjl3Y3BOamx4cWRIcl9oYz0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzY3MjI3NDAwLCJpYXQiOjE3NjcxODI4MzMsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzE4MjgzMywic3ViIjoiYWNjZXNzX3Rva2VuIn0.wsJ4qlwv079H6ck0_-jnWoehSrPkeK5zGcu6lD2_VCY";
 
 
     // Create session
@@ -28,13 +49,10 @@ int main() {
         return 1;
     }
 
-    printf("session created successfully\n %p",session);
+    // fy_generate_authcode(session); // generate auth code
+    // fy_generate_token(session, auth_code); // generate token
 
-    char auth_url[2048];
-    if (fyers_session_generate_authcode(session) != FYERS_OK) {
-        fprintf(stderr, "Failed to generate auth URL\n");
-        fyers_session_destroy(session);
-        fyers_cleanup();
-        return 1;
-    }
+    fyers_session_destroy(session);
+    fyers_cleanup();
+    return 0;
 }
