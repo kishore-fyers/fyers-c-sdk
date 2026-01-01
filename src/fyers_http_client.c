@@ -10,6 +10,7 @@
 #include <curl/curl.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <cjson/cJSON.h>
 
 struct fyers_http_client {
@@ -113,10 +114,6 @@ fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
     long status_code = 0;
     curl_easy_getinfo(client->curl, CURLINFO_RESPONSE_CODE, &status_code);
 
-    if (client->request_logger) {
-        fyers_logger_debug(client->request_logger, "Status Code: %ld, URL: %s", status_code, url);
-    }
-
     fyers_response_t* response = (fyers_response_t*)malloc(sizeof(fyers_response_t));
     if (!response) {
         curl_slist_free_all(headers);
@@ -135,18 +132,13 @@ fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
         }
     } else if (status_code >= 200 && status_code < 300) {
         response->error = FYERS_OK;
-        if (client->api_logger) {
-            fyers_logger_debug(client->api_logger, "Response: %.*s", (int)response->size, response->data);
-        }
     } else {
         response->error = FYERS_ERROR;
     }
 
-    if (response->data && response->size > 0 && client->request_logger) {
-        if (res != CURLE_OK || response->status_code >= 400) {
-            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
-                              response->status_code, (int)response->size, response->data);
-        }
+    // Print raw API response JSON
+    if (response->data && response->size > 0 && res == CURLE_OK) {
+        printf("%.*s\n", (int)response->size, response->data);
     }
 
     curl_slist_free_all(headers);
@@ -186,18 +178,10 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
     curl_easy_setopt(client->curl, CURLOPT_POSTFIELDS, data ? data : "");
     curl_easy_setopt(client->curl, CURLOPT_WRITEDATA, &response_data);
 
-    if (client->api_logger) {
-        fyers_logger_debug(client->api_logger, "POST URL: %s, Data: %s", url, data ? data : "");
-    }
-
     CURLcode res = curl_easy_perform(client->curl);
 
     long status_code = 0;
     curl_easy_getinfo(client->curl, CURLINFO_RESPONSE_CODE, &status_code);
-
-    if (client->request_logger) {
-        fyers_logger_debug(client->request_logger, "Status Code: %ld, URL: %s", status_code, url);
-    }
 
     fyers_response_t* response = (fyers_response_t*)malloc(sizeof(fyers_response_t));
     if (!response) {
@@ -217,18 +201,13 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
         }
     } else if (status_code >= 200 && status_code < 300) {
         response->error = FYERS_OK;
-        if (client->api_logger) {
-            fyers_logger_debug(client->api_logger, "Response: %.*s", (int)response->size, response->data);
-        }
     } else {
         response->error = FYERS_ERROR;
     }
 
-    if (response->data && response->size > 0 && client->request_logger) {
-        if (res != CURLE_OK || response->status_code >= 400) {
-            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
-                              response->status_code, (int)response->size, response->data);
-        }
+    // Print raw API response JSON
+    if (response->data && response->size > 0 && res == CURLE_OK) {
+        printf("%.*s\n", (int)response->size, response->data);
     }
 
     curl_slist_free_all(headers);
@@ -264,18 +243,10 @@ fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
     curl_easy_setopt(client->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
     curl_easy_setopt(client->curl, CURLOPT_WRITEDATA, &response_data);
 
-    if (client->api_logger) {
-        fyers_logger_debug(client->api_logger, "PATCH URL: %s, Data: %s", url, data ? data : "");
-    }
-
     CURLcode res = curl_easy_perform(client->curl);
 
     long status_code = 0;
     curl_easy_getinfo(client->curl, CURLINFO_RESPONSE_CODE, &status_code);
-
-    if (client->request_logger) {
-        fyers_logger_debug(client->request_logger, "Status Code: %ld, URL: %s", status_code, url);
-    }
 
     fyers_response_t* response = (fyers_response_t*)malloc(sizeof(fyers_response_t));
     if (!response) {
@@ -299,11 +270,9 @@ fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    if (response->data && response->size > 0 && client->request_logger) {
-        if (res != CURLE_OK || response->status_code >= 400) {
-            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
-                              response->status_code, (int)response->size, response->data);
-        }
+    // Print raw API response JSON
+    if (response->data && response->size > 0 && res == CURLE_OK) {
+        printf("%.*s\n", (int)response->size, response->data);
     }
 
     curl_slist_free_all(headers);
@@ -366,11 +335,9 @@ fyers_response_t* fyers_http_client_delete(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    if (response->data && response->size > 0 && client->request_logger) {
-        if (res != CURLE_OK || response->status_code >= 400) {
-            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
-                              response->status_code, (int)response->size, response->data);
-        }
+    // Print raw API response JSON
+    if (response->data && response->size > 0 && res == CURLE_OK) {
+        printf("%.*s\n", (int)response->size, response->data);
     }
 
     curl_slist_free_all(headers);
@@ -433,11 +400,9 @@ fyers_response_t* fyers_http_client_put(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    if (response->data && response->size > 0 && client->request_logger) {
-        if (res != CURLE_OK || response->status_code >= 400) {
-            fyers_logger_debug(client->request_logger, "API Response [%d]: %.*s", 
-                              response->status_code, (int)response->size, response->data);
-        }
+    // Print raw API response JSON
+    if (response->data && response->size > 0 && res == CURLE_OK) {
+        printf("%.*s\n", (int)response->size, response->data);
     }
 
     curl_slist_free_all(headers);

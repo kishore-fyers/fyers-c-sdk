@@ -304,10 +304,6 @@ fyers_error_t generate_token(fyers_session_t* session) {
         return FYERS_ERROR_NETWORK;
     }
 
-    if (response->data && response->size > 0) {
-        printf("%.*s\n", (int)response->size, response->data);
-    }
-
     if (response->error != FYERS_OK || response->status_code != 200) {
         // API response already printed above, just return error
         fyers_response_destroy(response);
