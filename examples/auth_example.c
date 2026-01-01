@@ -89,6 +89,34 @@ void fy_get_funds(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+void fy_get_holdings(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFZsdl9HR2ZGTmdVRkI5Wk43UWRqQUQ2c0FWMjNQRTVlemdOVDVFcDJCektWbzlaYnREekVNdmhrQ1BKS0hoZHBjVFNkN3RHYkRVa2U0dmNpWmJsZnViWlpIRGF0RENIcXgtYlllTnBxQmdHbzFDVT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3MzEzODAwLCJpYXQiOjE3NjcyNjczMjcsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzI2NzMyNywic3ViIjoiYWNjZXNzX3Rva2VuIn0.g-FR8t4rmhEJqjCdwUISIzz8Jh4qFgaSyx3t_d09Tq");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return;
+    }
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    fyers_response_t* response = fyers_model_get_holdings(model);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
 int main() {
     // Replace with your app credentials
     // const char* client_id = "M0R4WW1PYU-100";
@@ -115,7 +143,8 @@ int main() {
     // fy_generate_authcode(session); // generate auth code
     // fy_generate_token(session, auth_code); // generate token
     // fy_get_profile(session); // get profile
-    fy_get_funds(session); // get funds
+    // fy_get_funds(session); // get funds
+    fy_get_holdings(session); // get holdings
 
 
     fyers_session_destroy(session);
