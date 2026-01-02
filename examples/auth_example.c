@@ -551,6 +551,242 @@ void fy_place_multileg_order(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+void fy_place_gtt_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Placing single fy_place_gtt_order");
+
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddNumberToObject(root, "side", 1);
+    cJSON_AddStringToObject(root, "symbol", "NSE:SBIN-EQ");
+    cJSON_AddStringToObject(root, "productType", "CNC");
+
+    // ---- orderInfo ----
+    cJSON *orderInfo = cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "orderInfo", orderInfo);
+
+    // ---- leg1 ----
+    cJSON *leg1 = cJSON_CreateObject();
+    cJSON_AddNumberToObject(leg1, "price", 1000);
+    cJSON_AddNumberToObject(leg1, "triggerPrice", 1000);
+    cJSON_AddNumberToObject(leg1, "qty", 1);
+
+    cJSON_AddItemToObject(orderInfo, "leg1", leg1);
+
+    // ---- Convert to string ----
+    char *params = cJSON_PrintUnformatted(root);
+
+
+    fyers_response_t* response = fyers_model_place_gtt_order(model, params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_place_oco_gtt_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Getting fy_place_oco_gtt_order \n");
+
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddNumberToObject(root, "side", 1);
+    cJSON_AddStringToObject(root, "symbol", "NSE:CHOLAFIN-EQ");
+    cJSON_AddStringToObject(root, "productType", "CNC");
+
+    // ---- orderInfo ----
+    cJSON *orderInfo = cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "orderInfo", orderInfo);
+
+    // ---- leg1 ----
+    cJSON *leg1 = cJSON_CreateObject();
+    cJSON_AddNumberToObject(leg1, "price", 1010);
+    cJSON_AddNumberToObject(leg1, "triggerPrice", 1010);
+    cJSON_AddNumberToObject(leg1, "qty", 3);
+    cJSON_AddItemToObject(orderInfo, "leg1", leg1);
+
+    // ---- leg2 ----
+    cJSON *leg2 = cJSON_CreateObject();
+    cJSON_AddNumberToObject(leg2, "price", 1010);
+    cJSON_AddNumberToObject(leg2, "triggerPrice", 1010);
+    cJSON_AddNumberToObject(leg2, "qty", 3);
+    cJSON_AddItemToObject(orderInfo, "leg2", leg2);
+
+    // ---- stringify ----
+    char *params = cJSON_PrintUnformatted(root);
+
+    fyers_response_t* response = fyers_model_place_gtt_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_modify_gtt_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Getting fy_modify_gtt_order \n");
+
+    cJSON *root = cJSON_CreateObject();
+
+    // id
+    cJSON_AddStringToObject(root, "id", "26010200001538");
+
+    // ---- orderInfo ----
+    cJSON *orderInfo = cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "orderInfo", orderInfo);
+
+    // ---- leg1 ----
+    cJSON *leg1 = cJSON_CreateObject();
+    cJSON_AddNumberToObject(leg1, "price", 1010);
+    cJSON_AddNumberToObject(leg1, "triggerPrice", 1010);
+    cJSON_AddNumberToObject(leg1, "qty", 5);
+    cJSON_AddItemToObject(orderInfo, "leg1", leg1);
+
+    // ---- leg2 ----
+    cJSON *leg2 = cJSON_CreateObject();
+    cJSON_AddNumberToObject(leg2, "price", 1010);
+    cJSON_AddNumberToObject(leg2, "triggerPrice", 1010);
+    cJSON_AddNumberToObject(leg2, "qty", 5);
+    cJSON_AddItemToObject(orderInfo, "leg2", leg2);
+
+    // ---- stringify ----
+    char *params = cJSON_PrintUnformatted(root);
+
+    fyers_response_t* response = fyers_model_modify_gtt_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_cancel_gtt_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Delete fy_cancel_gtt_order \n");
+
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "id", "26010200001538");
+    char *params = cJSON_PrintUnformatted(root);
+
+    fyers_response_t* response = fyers_model_cancel_gtt_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+
+void fy_get_gtt_orderbook(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Getting fy_get_gtt_orderbook");
+
+    fyers_response_t* response = fyers_model_get_gtt_orderbook(model);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
 void fy_get_history(fyers_session_t* session) {
     fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
 
@@ -703,18 +939,12 @@ int main() {
     // Order Placement
     // fy_place_order(session); // place order
     // fy_multi_order(session); // place multi order
-    fy_place_multileg_order(session); // place multileg order
-    // fy_place_basket_orders(session); // place basket orders
-    // fy_place_gtt_order(session); // place gtt order
-    // fy_modify_order(session); // modify order
-    // fy_modify_basket_orders(session); // modify basket orders
-    // fy_modify_gtt_order(session); // modify gtt order
-    // fy_cancel_order(session); // cancel order
-    // fy_exit_positions(session); // exit positions
+    // fy_place_multileg_order(session); // place multileg order
 
     // GTT Orders
-    // fy_get_gtt_orderbook(session); // get gtt orderbook
     // fy_place_gtt_order(session); // place gtt order
+    // fy_place_oco_gtt_order(session); // place gtt oco order
+    // fy_get_gtt_orderbook(session); // get gtt orderbook
     // fy_modify_gtt_order(session); // modify gtt order
     // fy_cancel_gtt_order(session); // cancel gtt order
 

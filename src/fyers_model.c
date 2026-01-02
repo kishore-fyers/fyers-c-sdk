@@ -310,15 +310,9 @@ fyers_response_t* fyers_model_cancel_basket_orders(fyers_model_t* model, const c
     return make_delete_request(model, FYERS_ENDPOINT_MULTI_ORDERS, order_ids_json);
 }
 
-fyers_response_t* fyers_model_cancel_gtt_order(fyers_model_t* model, const char* order_id) {
+fyers_response_t* fyers_model_cancel_gtt_order(fyers_model_t* model, const char* order_json) {
     cJSON* json = cJSON_CreateObject();
-    cJSON_AddStringToObject(json, "id", order_id);
-    char* json_str = cJSON_Print(json);
-    cJSON_Delete(json);
-    
-    fyers_response_t* response = make_delete_request(model, FYERS_ENDPOINT_GTT_ORDERS, json_str);
-    free(json_str);
-    return response;
+    return make_delete_request(model, FYERS_ENDPOINT_GTT_ORDERS, order_json);
 }
 
 // Position management
