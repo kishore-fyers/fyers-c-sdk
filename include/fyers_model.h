@@ -39,8 +39,8 @@ fyers_response_t* fyers_model_get_funds(fyers_model_t* model);
 fyers_response_t* fyers_model_get_holdings(fyers_model_t* model);
 
 // Transaction APIs
-fyers_response_t* fyers_model_get_tradebook(fyers_model_t* model);
-fyers_response_t* fyers_model_get_orderbook(fyers_model_t* model, const char* order_ids);
+fyers_response_t* fyers_model_get_tradebook(fyers_model_t* model, const char* order_tag);
+fyers_response_t* fyers_model_get_orderbook(fyers_model_t* model, const char* order_ids, const char* order_tag);
 fyers_response_t* fyers_model_get_positions(fyers_model_t* model);
 fyers_response_t* fyers_model_get_market_status(fyers_model_t* model);
 

@@ -156,14 +156,20 @@ fyers_response_t* fyers_model_get_holdings(fyers_model_t* model) {
 }
 
 // Transaction APIs
-fyers_response_t* fyers_model_get_tradebook(fyers_model_t* model) {
+fyers_response_t* fyers_model_get_tradebook(fyers_model_t* model, const char* order_tag) {
+    char params[512] = "";
+    if (order_tag) {
+        snprintf(params, sizeof(params), "order_tag=%s", order_tag);
+    }
     return make_get_request(model, FYERS_ENDPOINT_TRADEBOOK, NULL, false);
 }
 
-fyers_response_t* fyers_model_get_orderbook(fyers_model_t* model, const char* order_ids) {
+fyers_response_t* fyers_model_get_orderbook(fyers_model_t* model, const char* order_ids, const char* order_tag) {
     char params[512] = "";
     if (order_ids) {
         snprintf(params, sizeof(params), "id=%s", order_ids);
+    } else if (order_tag) {
+        snprintf(params, sizeof(params), "order_tag=%s", order_tag);
     }
     return make_get_request(model, FYERS_ENDPOINT_ORDERBOOK, order_ids ? params : NULL, false);
 }
