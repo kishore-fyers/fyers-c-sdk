@@ -55,6 +55,7 @@ void fy_get_profile(fyers_session_t* session) {
         return;
     }
     
+    printf("Getting fy_get_profile");
     fyers_response_t* response = fyers_model_get_profile(model);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -84,7 +85,8 @@ void fy_get_funds(fyers_session_t* session) {
         fprintf(stderr, "Failed to create model\n");
         return;
     }
-    
+
+    printf("Getting fy_get_funds");
     fyers_response_t* response = fyers_model_get_funds(model);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -113,6 +115,7 @@ void fy_get_holdings(fyers_session_t* session) {
         return;
     }
 
+    printf("Getting fy_get_holdings");
     fyers_response_t* response = fyers_model_get_holdings(model);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -142,6 +145,7 @@ void fy_get_positions(fyers_session_t* session) {
         return;
     }
 
+    printf("Getting fy_get_positions");
     fyers_response_t* response = fyers_model_get_positions(model);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -171,6 +175,7 @@ void fy_logout(fyers_session_t* session) {
         return;
     }
 
+    printf("Getting fy_logout");
     fyers_response_t* response = fyers_model_logout(model);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -201,6 +206,7 @@ void fy_get_orderbook(fyers_session_t* session) {
     }
 
     fyers_response_t* response = fyers_model_get_orderbook(model, NULL, NULL);
+    printf("Getting fy_get_orderbook");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -230,7 +236,7 @@ void fy_get_orderbook_by_order_ids(fyers_session_t* session) {
     }
 
     const char* order_ids = "26010200134575";
-
+    printf("Getting fy_get_orderbook_by_order_id");
     fyers_response_t* response = fyers_model_get_orderbook(model, order_ids, NULL);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -261,7 +267,7 @@ void fy_get_orderbook_by_order_tag(fyers_session_t* session) {
     }
 
     const char* order_tag = "2:Untagged";
-
+    printf("Getting fy_get_orderbook_by_order_tag");
     fyers_response_t* response = fyers_model_get_orderbook(model, NULL, order_tag);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -291,6 +297,7 @@ void fy_get_tradebook(fyers_session_t* session) {
         return;
     }
 
+    printf("Getting fy_get_tradebook");
     fyers_response_t* response = fyers_model_get_tradebook(model, NULL);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -321,6 +328,7 @@ void fy_get_tradebook_by_order_tag(fyers_session_t* session) {
     }
 
     const char* order_tag = "2:Untagged";
+    printf("Getting fy_get_tradebook_by_order_tag");
     fyers_response_t* response = fyers_model_get_tradebook(model, order_tag);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -350,11 +358,61 @@ void fy_get_quotes(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting quotes for NSE:SBIN-EQ\n");
+    printf("Getting fy_get_quotes");
     fyers_response_t* response = fyers_model_get_quotes(model, "NSE:SBIN-EQ");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
+
+// void fy_get_history(fyers_session_t* session) {
+// }
+ 
+void fy_place_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Placing order\n");
+    cJSON* json = cJSON_CreateObject();
+    cJSON_AddStringToObject(json, "symbol", "NSE:SBIN-EQ");
+    cJSON_AddNumberToObject(json, "qty", 1);
+    cJSON_AddNumberToObject(json, "type", 2);
+    cJSON_AddNumberToObject(json, "side", 1);
+    cJSON_AddStringToObject(json, "productType", "INTRADAY");
+    cJSON_AddNumberToObject(json, "limitPrice", 0);
+    cJSON_AddNumberToObject(json, "stopPrice", 0);
+    cJSON_AddStringToObject(json, "validity", "DAY");
+    cJSON_AddNumberToObject(json, "disclosedQty", 0);
+    cJSON_AddBoolToObject(json, "offlineOrder", false);
+    cJSON_AddNumberToObject(json, "stopLoss", 0);
+    cJSON_AddNumberToObject(json, "takeProfit", 0);
+    cJSON_AddStringToObject(json, "orderTag", "tag1");
+    cJSON_AddBoolToObject(json, "isSliceOrder", false);
+    const char* params = cJSON_Print(json);
+    fyers_response_t* response = fyers_model_place_order(model, params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
 
 void fy_get_history(fyers_session_t* session) {
     fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
@@ -380,7 +438,7 @@ void fy_get_history(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting history for NSE:SBIN-EQ\n");
+    printf("Getting fy_get_history");
 
     cJSON* json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, "symbol", "NSE:SBIN-EQ");
@@ -420,7 +478,7 @@ void fy_get_depth(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting depth for NSE:SBIN-EQ\n");
+    printf("Getting fy_get_depth");
     fyers_response_t* response = fyers_model_get_depth(model, "NSE:SBIN-EQ", 1);
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -450,7 +508,7 @@ void fy_get_option_chain(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting option chain for NSE:SBIN-EQ\n");
+    printf("Getting fy_get_option_chain");
     cJSON* json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, "symbol", "NSE:SBIN-EQ");
     cJSON_AddNumberToObject(json, "strikecount", 7);
@@ -506,7 +564,7 @@ int main() {
     // fy_get_tradebook_by_order_tag(session); // get tradebook by order tag
 
     // Order Placement
-    // fy_place_order(session); // place order
+    fy_place_order(session); // place order
     // fy_place_basket_orders(session); // place basket orders
     // fy_place_multileg_order(session); // place multileg order
     // fy_place_gtt_order(session); // place gtt order
@@ -533,10 +591,10 @@ int main() {
     // fy_get_broker_config(session); // get broker config
 
     // Market Data
-    fy_get_history(session); // get history
+    // fy_get_history(session); // get history
     // fy_get_quotes(session); // get quotes
     // fy_get_depth(session); // get depth
-    fy_get_option_chain(session); // get option chain
+    // fy_get_option_chain(session); // get option chain
 
     // WebSocket
     // General Socket 
