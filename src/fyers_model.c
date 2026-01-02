@@ -265,6 +265,10 @@ fyers_response_t* fyers_model_place_order(fyers_model_t* model, const char* orde
     return make_post_request(model, FYERS_ENDPOINT_ORDERS, order_json);
 }
 
+fyers_response_t* fyers_model_place_multi_order(fyers_model_t* model, const char* order_json) {
+    return make_post_request(model, FYERS_ENDPOINT_MULTI_ORDERS, order_json);
+}
+
 fyers_response_t* fyers_model_place_basket_orders(fyers_model_t* model, const char* orders_json) {
     return make_post_request(model, FYERS_ENDPOINT_MULTI_ORDERS, orders_json);
 }
