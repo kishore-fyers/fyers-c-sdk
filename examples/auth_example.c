@@ -480,6 +480,76 @@ void fy_multi_order(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+void fy_place_multileg_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Placing multileg order\n");
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "orderTag", "tag1");
+    cJSON_AddStringToObject(root, "productType", "MARGIN");
+    cJSON_AddBoolToObject(root, "offlineOrder", false);
+    cJSON_AddStringToObject(root, "orderType", "3L");
+    cJSON_AddStringToObject(root, "validity", "IOC");
+    
+    // ---- legs object ----
+    cJSON *legs = cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "legs", legs);
+    
+    // ---- leg1 ----
+    cJSON *leg1 = cJSON_CreateObject();
+    cJSON_AddStringToObject(leg1, "symbol", "NSE:SBIN26JANFUT");
+    cJSON_AddNumberToObject(leg1, "qty", 750);
+    cJSON_AddNumberToObject(leg1, "side", 1);
+    cJSON_AddNumberToObject(leg1, "type", 1);
+    cJSON_AddNumberToObject(leg1, "limitPrice", 800);
+    cJSON_AddItemToObject(legs, "leg1", leg1);
+    
+    // ---- leg2 ----
+    cJSON *leg2 = cJSON_CreateObject();
+    cJSON_AddStringToObject(leg2, "symbol", "NSE:SBIN26FEBFUT");
+    cJSON_AddNumberToObject(leg2, "qty", 750);
+    cJSON_AddNumberToObject(leg2, "side", 1);
+    cJSON_AddNumberToObject(leg2, "type", 1);
+    cJSON_AddNumberToObject(leg2, "limitPrice", 800);
+    cJSON_AddItemToObject(legs, "leg2", leg2);
+    
+    // ---- leg3 ----
+    cJSON *leg3 = cJSON_CreateObject();
+    cJSON_AddStringToObject(leg3, "symbol", "NSE:SBIN26MARFUT");
+    cJSON_AddNumberToObject(leg3, "qty", 750);
+    cJSON_AddNumberToObject(leg3, "side", 1);
+    cJSON_AddNumberToObject(leg3, "type", 1);
+    cJSON_AddNumberToObject(leg3, "limitPrice", 3);
+    cJSON_AddItemToObject(legs, "leg3", leg3);
+    
+    // ---- print ----
+    char *params = cJSON_PrintUnformatted(root);    
+    
+    fyers_response_t* response = fyers_model_place_multileg_order(model, params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
 
 void fy_get_history(fyers_session_t* session) {
     fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
@@ -632,9 +702,9 @@ int main() {
 
     // Order Placement
     // fy_place_order(session); // place order
-    fy_multi_order(session); // place multi order
+    // fy_multi_order(session); // place multi order
+    fy_place_multileg_order(session); // place multileg order
     // fy_place_basket_orders(session); // place basket orders
-    // fy_place_multileg_order(session); // place multileg order
     // fy_place_gtt_order(session); // place gtt order
     // fy_modify_order(session); // modify order
     // fy_modify_basket_orders(session); // modify basket orders
