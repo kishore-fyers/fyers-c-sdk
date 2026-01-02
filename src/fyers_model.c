@@ -9,6 +9,7 @@
 #include "fyers_logger.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <cjson/cJSON.h>
 #include <curl/curl.h>
 
@@ -89,6 +90,83 @@ void fyers_response_destroy(fyers_response_t* response) {
     }
 
     free(response);
+}
+
+// Helper function to convert JSON to URL-encoded query string
+static char* json_to_query_string(const char* json_str) {
+    if (!json_str) {
+        return NULL;
+    }
+
+    cJSON* json = cJSON_Parse(json_str);
+    if (!json || !cJSON_IsObject(json)) {
+        if (json) {
+            cJSON_Delete(json);
+        }
+        return NULL;
+    }
+
+    // Create a temporary curl handle for URL encoding
+    CURL* curl = curl_easy_init();
+    if (!curl) {
+        cJSON_Delete(json);
+        return NULL;
+    }
+
+    char* query_str = (char*)malloc(2048);
+    if (!query_str) {
+        curl_easy_cleanup(curl);
+        cJSON_Delete(json);
+        return NULL;
+    }
+    query_str[0] = '\0';
+
+    cJSON* item = NULL;
+    cJSON_ArrayForEach(item, json) {
+        if (!cJSON_IsString(item) && !cJSON_IsNumber(item)) {
+            continue;
+        }
+
+        const char* key = item->string;
+        if (!key) {
+            continue;
+        }
+
+        // Get value as string
+        char value_str[256];
+        if (cJSON_IsString(item)) {
+            snprintf(value_str, sizeof(value_str), "%s", cJSON_GetStringValue(item));
+        } else if (cJSON_IsNumber(item)) {
+            if (cJSON_IsNumber(item) && item->valuedouble == (double)item->valueint) {
+                snprintf(value_str, sizeof(value_str), "%d", item->valueint);
+            } else {
+                snprintf(value_str, sizeof(value_str), "%.0f", item->valuedouble);
+            }
+        } else {
+            continue;
+        }
+
+        // URL encode key and value
+        char* encoded_key = curl_easy_escape(curl, key, 0);
+        char* encoded_value = curl_easy_escape(curl, value_str, 0);
+
+        if (encoded_key && encoded_value) {
+            if (strlen(query_str) > 0) {
+                strncat(query_str, "&", 2048 - strlen(query_str) - 1);
+            }
+            strncat(query_str, encoded_key, 2048 - strlen(query_str) - 1);
+            strncat(query_str, "=", 2048 - strlen(query_str) - 1);
+            strncat(query_str, encoded_value, 2048 - strlen(query_str) - 1);
+        }
+
+        curl_free(encoded_key);
+        curl_free(encoded_value);
+    }
+
+    curl_easy_cleanup(curl);
+    cJSON_Delete(json);
+
+    return query_str;
 }
 
 static fyers_response_t* make_get_request(fyers_model_t* model,
@@ -265,7 +343,15 @@ fyers_response_t* fyers_model_convert_position(fyers_model_t* model, const char*
 
 // Market data APIs
 fyers_response_t* fyers_model_get_history(fyers_model_t* model, const char* params_json) {
-    return make_get_request(model, FYERS_ENDPOINT_HISTORY, params_json, true);
+    char* query_str = json_to_query_string(params_json);
+    if (!query_str) {
+        // If JSON parsing fails, return NULL or try with original params
+        return NULL;
+    }
+    
+    fyers_response_t* response = make_get_request(model, FYERS_ENDPOINT_HISTORY, query_str, true);
+    free(query_str);
+    return response;
 }
 
 fyers_response_t* fyers_model_get_quotes(fyers_model_t* model, const char* symbols) {
@@ -281,7 +367,15 @@ fyers_response_t* fyers_model_get_depth(fyers_model_t* model, const char* symbol
 }
 
 fyers_response_t* fyers_model_get_option_chain(fyers_model_t* model, const char* params_json) {
-    return make_get_request(model, FYERS_ENDPOINT_OPTION_CHAIN, params_json, true);
+    char* query_str = json_to_query_string(params_json);
+    if (!query_str) {
+        // If JSON parsing fails, return NULL or try with original params
+        return NULL;
+    }
+    
+    fyers_response_t* response = make_get_request(model, FYERS_ENDPOINT_OPTION_CHAIN, query_str, true);
+    free(query_str);
+    return response;
 }
 
 // GTT APIs

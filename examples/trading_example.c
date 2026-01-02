@@ -72,7 +72,7 @@ int main() {
 
     // Get orderbook
     printf("\n=== Getting Orderbook ===\n");
-    response = fyers_model_get_orderbook(model, NULL);
+    response = fyers_model_get_orderbook(model, NULL, NULL);
     print_response(response);
     fyers_response_destroy(response);
 
