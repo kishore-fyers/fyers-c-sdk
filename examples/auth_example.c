@@ -1146,6 +1146,37 @@ void fy_convert_position(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+void fy_get_broker_config(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Getting fy_get_broker_config\n");
+
+    fyers_response_t* response = fyers_model_get_market_status(model);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
 void fy_get_history(fyers_session_t* session) {
     fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
@@ -1318,7 +1349,7 @@ int main() {
     // fy_convert_position(session); // convert position
     
     // Broker Config
-    // fy_get_broker_config(session); // get broker config
+    fy_get_broker_config(session); // get broker config
 
     // Market Data
     // fy_get_history(session); // get history
