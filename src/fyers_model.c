@@ -296,14 +296,7 @@ fyers_response_t* fyers_model_modify_gtt_order(fyers_model_t* model, const char*
 
 // Order cancellation
 fyers_response_t* fyers_model_cancel_order(fyers_model_t* model, const char* order_id) {
-    cJSON* json = cJSON_CreateObject();
-    cJSON_AddStringToObject(json, "id", order_id);
-    char* json_str = cJSON_Print(json);
-    cJSON_Delete(json);
-    
-    fyers_response_t* response = make_delete_request(model, FYERS_ENDPOINT_ORDERS, json_str);
-    free(json_str);
-    return response;
+    return make_delete_request(model, FYERS_ENDPOINT_MULTI_ORDERS, order_id);;
 }
 
 fyers_response_t* fyers_model_cancel_basket_orders(fyers_model_t* model, const char* order_ids_json) {
@@ -311,24 +304,12 @@ fyers_response_t* fyers_model_cancel_basket_orders(fyers_model_t* model, const c
 }
 
 fyers_response_t* fyers_model_cancel_gtt_order(fyers_model_t* model, const char* order_json) {
-    cJSON* json = cJSON_CreateObject();
     return make_delete_request(model, FYERS_ENDPOINT_GTT_ORDERS, order_json);
 }
 
 // Position management
-fyers_response_t* fyers_model_exit_positions(fyers_model_t* model, const char* position_id) {
-    cJSON* json = cJSON_CreateObject();
-    if (position_id) {
-        cJSON_AddStringToObject(json, "id", position_id);
-    } else {
-        cJSON_AddNumberToObject(json, "exit_all", 1);
-    }
-    char* json_str = cJSON_Print(json);
-    cJSON_Delete(json);
-    
-    fyers_response_t* response = make_delete_request(model, FYERS_ENDPOINT_POSITIONS, json_str);
-    free(json_str);
-    return response;
+fyers_response_t* fyers_model_exit_positions(fyers_model_t* model, const char* payload_json) {    
+    return make_delete_request(model, FYERS_ENDPOINT_POSITIONS, payload_json);
 }
 
 fyers_response_t* fyers_model_exit_all_positions(fyers_model_t* model) {

@@ -182,7 +182,7 @@ void fy_logout(fyers_session_t* session) {
 }
 
 void fy_get_orderbook(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -212,7 +212,7 @@ void fy_get_orderbook(fyers_session_t* session) {
 }
 
 void fy_get_orderbook_by_order_ids(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -243,7 +243,7 @@ void fy_get_orderbook_by_order_ids(fyers_session_t* session) {
 }
 
 void fy_get_orderbook_by_order_tag(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -274,7 +274,7 @@ void fy_get_orderbook_by_order_tag(fyers_session_t* session) {
 }
 
 void fy_get_tradebook(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -304,7 +304,7 @@ void fy_get_tradebook(fyers_session_t* session) {
 }
 
 void fy_get_tradebook_by_order_tag(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -335,7 +335,7 @@ void fy_get_tradebook_by_order_tag(fyers_session_t* session) {
 }
 
 void fy_get_quotes(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -368,7 +368,7 @@ void fy_get_quotes(fyers_session_t* session) {
 // }
  
 void fy_place_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -414,7 +414,7 @@ void fy_place_order(fyers_session_t* session) {
 }
 
 void fy_multi_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -481,7 +481,7 @@ void fy_multi_order(fyers_session_t* session) {
 }
 
 void fy_place_multileg_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -552,7 +552,7 @@ void fy_place_multileg_order(fyers_session_t* session) {
 }
 
 void fy_place_gtt_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -605,7 +605,7 @@ void fy_place_gtt_order(fyers_session_t* session) {
 }
 
 void fy_place_oco_gtt_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -663,7 +663,7 @@ void fy_place_oco_gtt_order(fyers_session_t* session) {
 }
 
 void fy_modify_gtt_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -720,7 +720,7 @@ void fy_modify_gtt_order(fyers_session_t* session) {
 }
 
 void fy_cancel_gtt_order(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -757,7 +757,7 @@ void fy_cancel_gtt_order(fyers_session_t* session) {
 }
 
 void fy_get_gtt_orderbook(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -787,8 +787,367 @@ void fy_get_gtt_orderbook(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+
+void fy_modify_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "id", "26010500129133");
+    cJSON_AddNumberToObject(root, "qty", 2);
+    cJSON_AddNumberToObject(root, "type", 1);
+    cJSON_AddNumberToObject(root, "side", 1);
+    cJSON_AddNumberToObject(root, "limitPrice", 22.10);
+
+    // Convert to string
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_modify_order\n");
+
+    fyers_response_t* response = fyers_model_modify_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    
+}
+void fy_modify_mutli_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *arr = cJSON_CreateArray();
+
+    // -------- object 1 --------
+    cJSON *o1 = cJSON_CreateObject();
+    cJSON_AddStringToObject(o1, "id", "26010500129133");
+    cJSON_AddNumberToObject(o1, "type", 1);
+    cJSON_AddNumberToObject(o1, "limitPrice", 22.11);
+    cJSON_AddNumberToObject(o1, "stopPrice", 0);
+    cJSON_AddNumberToObject(o1, "qty", 5);
+    cJSON_AddItemToArray(arr, o1);
+
+    // -------- object 2 --------
+    cJSON *o2 = cJSON_CreateObject();
+    cJSON_AddStringToObject(o2, "id", "26010500164960");
+    cJSON_AddNumberToObject(o2, "type", 1);
+    cJSON_AddNumberToObject(o2, "limitPrice", 13.01);
+    cJSON_AddNumberToObject(o2, "stopPrice", 0);
+    cJSON_AddNumberToObject(o2, "qty", 5);
+    cJSON_AddItemToArray(arr, o2);
+
+    // Convert to string
+    char *params = cJSON_PrintUnformatted(arr);
+    printf("Getting fy_modify_mutli_order\n");
+
+    fyers_response_t* response = fyers_model_modify_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+void fy_cancel_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "id", "26010500129133");
+
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_cancel_order\n");
+
+    fyers_response_t* response = fyers_model_cancel_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+void fy_cancel_mutli_order(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *arr = cJSON_CreateArray();
+
+    // -------- object 1 --------
+    cJSON *o1 = cJSON_CreateObject();
+    cJSON_AddStringToObject(o1, "id", "26010500212409");
+    cJSON_AddItemToArray(arr, o1);
+
+    // -------- object 2 --------
+    cJSON *o2 = cJSON_CreateObject();
+    cJSON_AddStringToObject(o2, "id", "26010500164960");
+    cJSON_AddItemToArray(arr, o2);
+
+    // Convert to string
+    char *params = cJSON_PrintUnformatted(arr);
+    printf("Getting fy_cancel_mutli_order\n");
+
+    fyers_response_t* response = fyers_model_cancel_order(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+void fy_exit_all_positions(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddNumberToObject(root, "exit_all", 1);
+
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_exit_all_positions\n");
+
+    fyers_response_t* response = fyers_model_exit_positions(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+
+void fy_exit_position_by_segment(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddNumberToObject(root, "segment", 1);
+    cJSON_AddNumberToObject(root, "side", 1);
+    cJSON_AddStringToObject(root, "productType","INTRADAY");
+
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_exit_position_by_segment\n");
+
+    fyers_response_t* response = fyers_model_exit_positions(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+void fy_exit_position_by_id(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "id", "NSE:SBIN-EQ-BO");
+
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_exit_position_by_id\n");
+
+    fyers_response_t* response = fyers_model_exit_positions(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+void fy_pending_order_cancel(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+    
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddNumberToObject(root, "pending_orders_cancel", 1);
+
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_pending_order_cancel\n");
+
+    fyers_response_t* response = fyers_model_exit_positions(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
+void fy_convert_position(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
+
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "symbol","MCX:SILVERMIC20NOVFUT-INTRADAY");
+    cJSON_AddNumberToObject(root, "pending_orders_cancel", 1);
+    cJSON_AddNumberToObject(root, "positionSide", 1);
+    cJSON_AddNumberToObject(root, "convertQty", 1);
+    cJSON_AddStringToObject(root, "convertFrom","INTRADAY");
+    cJSON_AddStringToObject(root, "convertTo","CNC");
+    cJSON_AddNumberToObject(root, "overnight", 1);
+    
+    char *params = cJSON_PrintUnformatted(root);
+    printf("Getting fy_pending_order_cancel\n");
+
+    fyers_response_t* response = fyers_model_exit_positions(model,params);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
 void fy_get_history(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -828,7 +1187,7 @@ void fy_get_history(fyers_session_t* session) {
 }
 
 void fy_get_depth(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -858,7 +1217,7 @@ void fy_get_depth(fyers_session_t* session) {
 }
 
 void fy_get_option_chain(fyers_session_t* session) {
-    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4");
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A");
 
     const char* client_id = fyers_session_get_client_id(session);
     const char* access_token = fyers_session_get_access_token(session);
@@ -900,8 +1259,7 @@ int main() {
     const char* redirect_uri = "https://trade.fyers.in/api-login/redirect-uri/index.html";
     const char* secret_key = "XKCP7PAISD";
     const char* auth_code = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJNMFI0V1cxUFlVIiwidXVpZCI6Ijg4N2ZiNTUxMDdhMzRmMGM5Y2M0MzZlYjg0ZjFiMjNhIiwiaXBBZGRyIjoiIiwibm9uY2UiOiIiLCJzY29wZSI6IiIsImRpc3BsYXlfbmFtZSI6IllLMDQzOTEiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImF1ZCI6IltcImQ6MVwiLFwiZDoyXCIsXCJ4OjBcIixcIng6MVwiLFwieDoyXCJdIiwiZXhwIjoxNzY3MjEyNjMwLCJpYXQiOjE3NjcxODI2MzAsImlzcyI6ImFwaS5sb2dpbi5meWVycy5pbiIsIm5iZiI6MTc2NzE4MjYzMCwic3ViIjoiYXV0aF9jb2RlIn0.y7sB3C0y4FzrEhaqpB_qiwN5GMAKBt64Y0GVQFIy7mo";
-    // const char* access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCcFZSSHhtTThHT1RjSnVLM2FZRHp4VUFVdGRpUHFKM3pyaDBCdzVWd3AwNlVlMkdQSVJhdW5lUmk2aXJjRFRORDRrLThoc3FaeWd3WFlQSUczbmZHSF9SMW9nY3poemczVjl3Y3BOamx4cWRIcl9oYz0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzY3MjI3NDAwLCJpYXQiOjE3NjcxODI4MzMsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzE4MjgzMywic3ViIjoiYWNjZXNzX3Rva2VuIn0.wsJ4qlwv079H6ck0_-jnWoehSrPkeK5zGcu6lD2_VCY";
-    const char* access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFYyemhOeGUwQld5UklVUEdWeVQ0b3Z2cTZBQ0hqYXAxcmZjNVl5dVFkYVU0RV9Kb2lZdTQza2JJTVlpTkhCRUJ0bnZOX3ktTWlMUjFqM3Vnd2VvaFBaZHZ5OThGbEo1Sk1mVnRlZ1U1WFA1elJrMD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NDAwMjAwLCJpYXQiOjE3NjczMzcxODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzMzNzE4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.0_2pdN0Pg-jt8IxsU67QzHh8j47kH-15xgil9fdrQT4";
+    const char* access_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFcwQ3JvQXRvT0ZqaFRPRUItZUpTQnJnQ0tZNWlhcGxwTW5HZkFiWk9YbzA3ZGdBSm0zSUd4STF1VFhUTWlRVlhQX3pqTHFxTGZhdnlPeEhNU1ZQdzVUSHNnakMwZzJJS3FFYmpob0V2OTdtLTRMND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJmYmM2YmE3MGE3YWI2MzEwNDZlYzAxOTNiODgxY2M5NTAyMjhiMmRjNjI0YzYwNDc1NzJkNDAwMyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY3NjU5NDAwLCJpYXQiOjE3Njc1ODgwMTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2NzU4ODAxMSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.h0hpe___B_l80dr9Gra4iB0s9PYq7Jcj-18QBFug09A";
 
 
     // Create session
@@ -950,11 +1308,15 @@ int main() {
 
     // Other Transactions
     // fy_modify_order(session); // modify order
-    // fy_modify_basket_orders(session); // modify basket orders
-    // fy_modify_gtt_order(session); // modify gtt order
+    // fy_modify_mutli_order(session); // modify mutli order
     // fy_cancel_order(session); // cancel order
-    // fy_exit_positions(session); // exit positions
-
+    // fy_cancel_mutli_order(session); // cancel order
+    // fy_exit_all_positions(session); // exit positions
+    // fy_exit_position_by_segment(session); // exit all positions
+    // fy_exit_position_by_id(session); // exit position by Segment Side & productType
+    // fy_pending_order_cancel(session); // pending order cancel
+    // fy_convert_position(session); // convert position
+    
     // Broker Config
     // fy_get_broker_config(session); // get broker config
 
