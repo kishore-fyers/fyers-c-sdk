@@ -55,6 +55,7 @@ struct fyers_order_ws {
     pthread_t ping_thread;
     pthread_mutex_t ws_mutex;
     bool thread_running;
+    bool ping_thread_started;
     
     // Logger
     fyers_logger_t* logger;
@@ -73,7 +74,8 @@ static void* ping_thread_order(void* arg) {
         
         pthread_mutex_lock(&ws->ws_mutex);
         if (ws->lws_wsi && ws->connected) {
-            lws_write(ws->lws_wsi, (unsigned char*)"ping", 4, LWS_WRITE_TEXT);
+            // Request WRITEABLE callback to send ping (proper libwebsockets way)
+            lws_callback_on_writable(ws->lws_wsi);
         }
         pthread_mutex_unlock(&ws->ws_mutex);
     }
@@ -81,7 +83,207 @@ static void* ping_thread_order(void* arg) {
     return NULL;
 }
 
-// Parse and route messages
+// Field name mapper structure
+typedef struct {
+    const char* from;  // Server field name (snake_case)
+    const char* to;    // User field name (camelCase)
+} field_mapper_t;
+
+// Order mapper (from map.json order_mapper)
+static const field_mapper_t order_mapper[] = {
+    {"client_id", "clientId"},
+    {"id", "id"},
+    {"id_parent", "parentId"},
+    {"id_exchange", "exchOrdId"},
+    {"qty", "qty"},
+    {"qty_remaining", "remainingQuantity"},
+    {"qty_filled", "filledQty"},
+    {"price_limit", "limitPrice"},
+    {"price_stop", "stopPrice"},
+    {"price_traded", "tradedPrice"},
+    {"ord_type", "type"},
+    {"fy_token", "fyToken"},
+    {"exchange", "exchange"},
+    {"segment", "segment"},
+    {"symbol", "symbol"},
+    {"instrument", "instrument"},
+    {"oms_msg", "message"},
+    {"offline_flag", "offlineOrder"},
+    {"time_oms", "orderDateTime"},
+    {"validity", "orderValidity"},
+    {"product_type", "productType"},
+    {"tran_side", "side"},
+    {"org_ord_status", "status"},
+    {"ord_source", "source"},
+    {"symbol_exch", "ex_sym"},
+    {"symbol_desc", "description"},
+    {"ordertag", "orderTag"},
+    {NULL, NULL}
+};
+
+// Trade mapper (from map.json trade_mapper)
+static const field_mapper_t trade_mapper[] = {
+    {"id_fill", "tradeNumber"},
+    {"id", "orderNumber"},
+    {"qty_traded", "tradedQty"},
+    {"price_traded", "tradePrice"},
+    {"traded_val", "tradeValue"},
+    {"product_type", "productType"},
+    {"client_id", "clientId"},
+    {"id_exchange", "exchangeOrderNo"},
+    {"ord_type", "orderType"},
+    {"tran_side", "side"},
+    {"symbol", "symbol"},
+    {"fill_time", "orderDateTime"},
+    {"fy_token", "fyToken"},
+    {"exchange", "exchange"},
+    {"segment", "segment"},
+    {"ordertag", "orderTag"},
+    {NULL, NULL}
+};
+
+// Position mapper (from map.json position_mapper)
+static const field_mapper_t position_mapper[] = {
+    {"symbol", "symbol"},
+    {"id", "id"},
+    {"buy_avg", "buyAvg"},
+    {"buy_qty", "buyQty"},
+    {"buy_val", "buyVal"},
+    {"sell_avg", "sellAvg"},
+    {"sell_qty", "sellQty"},
+    {"sell_val", "sellVal"},
+    {"net_avg", "netAvg"},
+    {"net_qty", "netQty"},
+    {"tran_side", "side"},
+    {"qty", "qty"},
+    {"product_type", "productType"},
+    {"pl_realized", "realized_profit"},
+    {"rbirefrate", "rbiRefRate"},
+    {"fy_token", "fyToken"},
+    {"exchange", "exchange"},
+    {"segment", "segment"},
+    {"day_buy_qty", "dayBuyQty"},
+    {"day_sell_qty", "daySellQty"},
+    {"cf_buy_qty", "cfBuyQty"},
+    {"cf_sell_qty", "cfSellQty"},
+    {"qty_multiplier", "qtyMulti_com"},
+    {"pl_total", "pl"},
+    {"cross_curr_flag", "crossCurrency"},
+    {"pl_unrealized", "unrealized_profit"},
+    {NULL, NULL}
+};
+
+// Transform field names using mapper (matching Python __parse_order_data, __parse_trade_data, __parse_position_data)
+static cJSON* transform_fields(cJSON* source_obj, const field_mapper_t* mapper) {
+    if (!source_obj || !mapper) {
+        return NULL;
+    }
+    
+    cJSON* result = cJSON_CreateObject();
+    if (!result) {
+        return NULL;
+    }
+    
+    // Copy "s" field if present
+    cJSON* s_field = cJSON_GetObjectItem(source_obj, "s");
+    if (s_field) {
+        cJSON_AddItemToObject(result, "s", cJSON_Duplicate(s_field, 1));
+    }
+    
+    // Transform fields using mapper
+    for (int i = 0; mapper[i].from; i++) {
+        cJSON* source_field = cJSON_GetObjectItem(source_obj, mapper[i].from);
+        if (source_field) {
+            cJSON_AddItemToObject(result, mapper[i].to, cJSON_Duplicate(source_field, 1));
+        }
+    }
+    
+    return result;
+}
+
+// Parse order data (matching Python __parse_order_data)
+static cJSON* parse_order_data(fyers_order_ws_t* ws, cJSON* msg) {
+    cJSON* orders_obj = cJSON_GetObjectItem(msg, "orders");
+    if (!orders_obj) {
+        return NULL;
+    }
+    
+    // Transform field names
+    cJSON* order_data = transform_fields(orders_obj, order_mapper);
+    if (!order_data) {
+        return NULL;
+    }
+    
+    // Add orderNumStatus field (matching Python: id + ":" + str(org_ord_status))
+    cJSON* id_field = cJSON_GetObjectItem(orders_obj, "id");
+    cJSON* status_field = cJSON_GetObjectItem(orders_obj, "org_ord_status");
+    if (id_field && status_field && cJSON_IsString(id_field) && cJSON_IsNumber(status_field)) {
+        char order_num_status[256];
+        snprintf(order_num_status, sizeof(order_num_status), "%s:%d", 
+                 cJSON_GetStringValue(id_field), (int)cJSON_GetNumberValue(status_field));
+        cJSON_AddStringToObject(order_data, "orderNumStatus", order_num_status);
+    }
+    
+    // Create result with "s" and "orders"
+    cJSON* result = cJSON_CreateObject();
+    cJSON* s_field = cJSON_GetObjectItem(msg, "s");
+    if (s_field) {
+        cJSON_AddItemToObject(result, "s", cJSON_Duplicate(s_field, 1));
+    }
+    cJSON_AddItemToObject(result, "orders", order_data);
+    
+    return result;
+}
+
+// Parse trade data (matching Python __parse_trade_data)
+static cJSON* parse_trade_data(fyers_order_ws_t* ws, cJSON* msg) {
+    cJSON* trades_obj = cJSON_GetObjectItem(msg, "trades");
+    if (!trades_obj) {
+        return NULL;
+    }
+    
+    // Transform field names
+    cJSON* trade_data = transform_fields(trades_obj, trade_mapper);
+    if (!trade_data) {
+        return NULL;
+    }
+    
+    // Create result with "s" and "trades"
+    cJSON* result = cJSON_CreateObject();
+    cJSON* s_field = cJSON_GetObjectItem(msg, "s");
+    if (s_field) {
+        cJSON_AddItemToObject(result, "s", cJSON_Duplicate(s_field, 1));
+    }
+    cJSON_AddItemToObject(result, "trades", trade_data);
+    
+    return result;
+}
+
+// Parse position data (matching Python __parse_position_data)
+static cJSON* parse_position_data(fyers_order_ws_t* ws, cJSON* msg) {
+    cJSON* positions_obj = cJSON_GetObjectItem(msg, "positions");
+    if (!positions_obj) {
+        return NULL;
+    }
+    
+    // Transform field names
+    cJSON* position_data = transform_fields(positions_obj, position_mapper);
+    if (!position_data) {
+        return NULL;
+    }
+    
+    // Create result with "s" and "positions"
+    cJSON* result = cJSON_CreateObject();
+    cJSON* s_field = cJSON_GetObjectItem(msg, "s");
+    if (s_field) {
+        cJSON_AddItemToObject(result, "s", cJSON_Duplicate(s_field, 1));
+    }
+    cJSON_AddItemToObject(result, "positions", position_data);
+    
+    return result;
+}
+
+// Parse and route messages (matching Python __on_message)
 static void handle_order_message(fyers_order_ws_t* ws, const char* message) {
     if (!ws || !message) {
         return;
@@ -97,25 +299,51 @@ static void handle_order_message(fyers_order_ws_t* ws, const char* message) {
         return;
     }
     
-    // Route to appropriate callback
+    // Route to appropriate callback with field transformation
+    cJSON* parsed_result = NULL;
+    char* json_str = NULL;
+    
     if (cJSON_GetObjectItem(json, "orders")) {
-        if (ws->on_orders) {
-            ws->on_orders(ws, message);
+        parsed_result = parse_order_data(ws, json);
+        if (parsed_result && ws->on_orders) {
+            json_str = cJSON_PrintUnformatted(parsed_result);
+            if (json_str) {
+                ws->on_orders(ws, json_str);
+                free(json_str);
+            }
         }
     } else if (cJSON_GetObjectItem(json, "positions")) {
-        if (ws->on_positions) {
-            ws->on_positions(ws, message);
+        parsed_result = parse_position_data(ws, json);
+        if (parsed_result && ws->on_positions) {
+            json_str = cJSON_PrintUnformatted(parsed_result);
+            if (json_str) {
+                ws->on_positions(ws, json_str);
+                free(json_str);
+            }
         }
     } else if (cJSON_GetObjectItem(json, "trades")) {
-        if (ws->on_trades) {
-            ws->on_trades(ws, message);
+        parsed_result = parse_trade_data(ws, json);
+        if (parsed_result && ws->on_trades) {
+            json_str = cJSON_PrintUnformatted(parsed_result);
+            if (json_str) {
+                ws->on_trades(ws, json_str);
+                free(json_str);
+            }
         }
     } else {
+        // General messages - pass as-is
         if (ws->on_general) {
-            ws->on_general(ws, message);
+            json_str = cJSON_PrintUnformatted(json);
+            if (json_str) {
+                ws->on_general(ws, json_str);
+                free(json_str);
+            }
         }
     }
     
+    if (parsed_result) {
+        cJSON_Delete(parsed_result);
+    }
     cJSON_Delete(json);
 }
 
@@ -129,14 +357,52 @@ static int callback_fyers_order_ws(struct lws* wsi, enum lws_callback_reasons re
     }
     
     switch (reason) {
+        case LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER:
+            // Add authorization header (matching Python header={"authorization": self.__access_token})
+            {
+                unsigned char **p = (unsigned char **)in, *end = (*p) + len;
+                // Try using WSI_TOKEN_HTTP_AUTHORIZATION first (more reliable)
+                if (lws_add_http_header_by_token(wsi,
+                        WSI_TOKEN_HTTP_AUTHORIZATION,
+                        (const unsigned char *)ws->access_token,
+                        (int)strlen(ws->access_token), p, end)) {
+                    // Fallback to by_name if token approach fails
+                    if (lws_add_http_header_by_name(wsi,
+                            (const unsigned char *)"authorization",
+                            (const unsigned char *)ws->access_token,
+                            (int)strlen(ws->access_token), p, end)) {
+                        return -1;
+                    }
+                }
+            }
+            break;
+            
         case LWS_CALLBACK_CLIENT_ESTABLISHED:
             ws->connected = true;
+            ws->lws_wsi = wsi;  // Ensure wsi is set
             ws->reconnect_attempts = 0;
             ws->reconnect_delay = 0;
             
-            if (ws->on_connect) {
-                ws->on_connect(ws);
+            // Start ping thread after connection established (matching Python __on_open)
+            ws->ping_thread_started = true;
+            pthread_create(&ws->ping_thread, NULL, ping_thread_order, ws);
+            break;
+            
+        case LWS_CALLBACK_CLIENT_WRITEABLE:
+            // Send ping message when writeable
+            pthread_mutex_lock(&ws->ws_mutex);
+            if (ws->lws_wsi && ws->connected) {
+                // Prepare ping message with LWS_PRE padding
+                size_t ping_size = 4;  // "ping"
+                size_t total_size = LWS_PRE + ping_size;
+                uint8_t* send_buf = (uint8_t*)malloc(total_size);
+                if (send_buf) {
+                    memcpy(send_buf + LWS_PRE, "ping", ping_size);
+                    lws_write(ws->lws_wsi, send_buf + LWS_PRE, ping_size, LWS_WRITE_TEXT);
+                    free(send_buf);
+                }
             }
+            pthread_mutex_unlock(&ws->ws_mutex);
             break;
             
         case LWS_CALLBACK_CLIENT_RECEIVE:
@@ -169,10 +435,15 @@ static int callback_fyers_order_ws(struct lws* wsi, enum lws_callback_reasons re
             break;
             
         case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
+            ws->connected = false;
             if (ws->on_error) {
                 ws->on_error(ws, "Connection error");
             }
             break;
+            
+        case LWS_CALLBACK_OPENSSL_LOAD_EXTRA_CLIENT_VERIFY_CERTS:
+            // Skip SSL certificate verification
+            return 1;
             
         default:
             break;
@@ -182,9 +453,10 @@ static int callback_fyers_order_ws(struct lws* wsi, enum lws_callback_reasons re
 }
 
 // WebSocket protocols
+// Use empty string as protocol name - server will negotiate (matching Python behavior)
 static struct lws_protocols order_protocols[] = {
     {
-        "fyers-order-protocol",
+        "",  // Empty protocol name - let server choose (matching Python behavior)
         callback_fyers_order_ws,
         0,
         4096,
@@ -242,6 +514,7 @@ fyers_order_ws_t* fyers_order_ws_create(
     ws->restart_flag = reconnect;
     ws->connected = false;
     ws->thread_running = true;
+    ws->ping_thread_started = false;
     
     // Initialize mutex
     pthread_mutex_init(&ws->ws_mutex, NULL);
@@ -266,7 +539,8 @@ void fyers_order_ws_destroy(fyers_order_ws_t* ws) {
     if (ws->ws_thread) {
         pthread_join(ws->ws_thread, NULL);
     }
-    if (ws->ping_thread) {
+    // Ping thread is only started after connection established
+    if (ws->ping_thread_started) {
         pthread_join(ws->ping_thread, NULL);
     }
     
@@ -295,6 +569,9 @@ fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws) {
         return FYERS_ERROR_INVALID_PARAM;
     }
     
+    // Suppress libwebsockets logging (only show errors and warnings)
+    lws_set_log_level(LLL_ERR | LLL_WARN, NULL);
+    
     struct lws_context_creation_info info;
     memset(&info, 0, sizeof(info));
     
@@ -302,6 +579,9 @@ fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws) {
     info.protocols = order_protocols;
     info.gid = -1;
     info.uid = -1;
+    // Skip SSL certificate verification for self-signed certificates
+    info.options = LWS_SERVER_OPTION_DO_SSL_GLOBAL_INIT;
+    info.client_ssl_ca_filepath = NULL;  // Don't verify CA
     
     ws->lws_context = lws_create_context(&info);
     if (!ws->lws_context) {
@@ -318,7 +598,9 @@ fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws) {
     ccinfo.host = "socket.fyers.in";
     ccinfo.origin = "socket.fyers.in";
     ccinfo.protocol = order_protocols[0].name;
-    ccinfo.ssl_connection = LCCSCF_USE_SSL;
+    // Use SSL but skip certificate verification (matching Python sslopt={"cert_reqs": ssl.CERT_NONE})
+    ccinfo.ssl_connection = LCCSCF_USE_SSL | LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK;
+    // Authorization header will be added in LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER callback
     ccinfo.userdata = ws;
     
     ws->lws_wsi = lws_client_connect_via_info(&ccinfo);
@@ -329,10 +611,30 @@ fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws) {
     }
     
     // Start service thread
+    // Ping thread will be started in LWS_CALLBACK_CLIENT_ESTABLISHED (matching Python flow)
     pthread_create(&ws->ws_thread, NULL, ws_service_thread_order, ws);
-    pthread_create(&ws->ping_thread, NULL, ping_thread_order, ws);
     
-    return FYERS_OK;
+    // Wait for connection to establish (check connected flag)
+    // Python waits 2 seconds, but we'll wait up to 5 seconds for actual connection
+    int wait_count = 0;
+    while (wait_count < 50 && !ws->connected) {  // 50 * 100ms = 5 seconds
+        usleep(100000);  // 100ms
+        wait_count++;
+    }
+    
+    if (ws->connected) {
+        // Wait additional 2 seconds matching Python flow (connect() waits 2 seconds before calling on_open())
+        sleep(2);
+        
+        // Call on_connect callback (matching Python's on_open() call from connect())
+        if (ws->on_connect) {
+            ws->on_connect(ws);
+        }
+        
+        return FYERS_OK;
+    } else {
+        return FYERS_ERROR_NETWORK;
+    }
 }
 
 void fyers_order_ws_close(fyers_order_ws_t* ws) {
@@ -345,8 +647,9 @@ void fyers_order_ws_close(fyers_order_ws_t* ws) {
     ws->thread_running = false;
     
     pthread_mutex_lock(&ws->ws_mutex);
-    if (ws->lws_wsi) {
-        lws_close_reason(ws->lws_wsi, LWS_CLOSE_STATUS_NORMAL, NULL, 0);
+    if (ws->lws_wsi && ws->connected) {
+        // Use lws_set_timeout to trigger close, which is safer than lws_close_reason
+        lws_set_timeout(ws->lws_wsi, NO_PENDING_TIMEOUT, LWS_TO_KILL_ASYNC);
         ws->lws_wsi = NULL;
     }
     ws->connected = false;
@@ -402,9 +705,17 @@ fyers_error_t fyers_order_ws_subscribe(fyers_order_ws_t* ws, const char* data_ty
         return FYERS_ERROR_MEMORY;
     }
     
+    // Send message using proper libwebsockets mechanism (with LWS_PRE padding)
     pthread_mutex_lock(&ws->ws_mutex);
     if (ws->lws_wsi && ws->connected) {
-        lws_write(ws->lws_wsi, (unsigned char*)json_str, strlen(json_str), LWS_WRITE_TEXT);
+        size_t msg_len = strlen(json_str);
+        size_t total_size = LWS_PRE + msg_len;
+        uint8_t* send_buf = (uint8_t*)malloc(total_size);
+        if (send_buf) {
+            memcpy(send_buf + LWS_PRE, json_str, msg_len);
+            lws_write(ws->lws_wsi, send_buf + LWS_PRE, msg_len, LWS_WRITE_TEXT);
+            free(send_buf);
+        }
     }
     pthread_mutex_unlock(&ws->ws_mutex);
     
@@ -459,9 +770,17 @@ fyers_error_t fyers_order_ws_unsubscribe(fyers_order_ws_t* ws, const char* data_
         return FYERS_ERROR_MEMORY;
     }
     
+    // Send message using proper libwebsockets mechanism (with LWS_PRE padding)
     pthread_mutex_lock(&ws->ws_mutex);
     if (ws->lws_wsi && ws->connected) {
-        lws_write(ws->lws_wsi, (unsigned char*)json_str, strlen(json_str), LWS_WRITE_TEXT);
+        size_t msg_len = strlen(json_str);
+        size_t total_size = LWS_PRE + msg_len;
+        uint8_t* send_buf = (uint8_t*)malloc(total_size);
+        if (send_buf) {
+            memcpy(send_buf + LWS_PRE, json_str, msg_len);
+            lws_write(ws->lws_wsi, send_buf + LWS_PRE, msg_len, LWS_WRITE_TEXT);
+            free(send_buf);
+        }
     }
     pthread_mutex_unlock(&ws->ws_mutex);
     
