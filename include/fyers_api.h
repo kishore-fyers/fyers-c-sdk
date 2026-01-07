@@ -18,9 +18,6 @@ extern "C" {
 // Forward declarations
 typedef struct fyers_session fyers_session_t;
 typedef struct fyers_model fyers_model_t;
-typedef struct fyers_data_socket fyers_data_socket_t;
-typedef struct fyers_order_socket fyers_order_socket_t;
-typedef struct fyers_tbt_socket fyers_tbt_socket_t;
 
 // Error codes
 typedef enum {
@@ -97,6 +94,11 @@ void fyers_set_log_callback(fyers_log_callback_t callback);
 
 // Set log level
 void fyers_set_log_level(fyers_log_level_t level);
+
+// WebSocket APIs (forward declarations)
+// Include full headers for complete API
+#include "fyers_data_ws.h"
+#include "fyers_order_ws.h"
 
 #ifdef __cplusplus
 }

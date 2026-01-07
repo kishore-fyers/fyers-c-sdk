@@ -7,7 +7,6 @@ Official C/C++ SDK for the Fyers Trading API v3. This SDK provides a C-style API
 - ✅ Full REST API support (trading, market data, user info)
 - ✅ OAuth2 authentication flow with simplified API
 - ✅ Auto-initialization (no manual init required)
-- ✅ WebSocket support for real-time data (Data, Order, TBT sockets)
 - ✅ Synchronous and asynchronous API calls
 - ✅ Cross-platform (Linux, macOS, Windows)
 - ✅ Thread-safe logging
@@ -22,8 +21,6 @@ Official C/C++ SDK for the Fyers Trading API v3. This SDK provides a C-style API
 - libcurl (for HTTP requests)
 - cJSON (for JSON parsing)
 - OpenSSL (for cryptographic operations)
-- libwebsockets (optional, for WebSocket support)
-- protobuf (optional, for TBT WebSocket)
 
 ## Installation
 
@@ -36,16 +33,13 @@ sudo apt-get install -y \
     cmake \
     libcurl4-openssl-dev \
     libcjson-dev \
-    libssl-dev \
-    libwebsockets-dev \
-    libprotobuf-dev \
-    protobuf-compiler
+    libssl-dev
 ```
 
 ### macOS
 
 ```bash
-brew install cmake curl cjson openssl libwebsockets protobuf
+brew install cmake curl cjson openssl
 ```
 
 ### Building
@@ -167,55 +161,6 @@ fyers_model_destroy(model);
 fyers_cleanup();
 ```
 
-### 3. WebSocket Example
-
-```c
-#include "fyers_api.h"
-#include "fyers_websocket.h"
-
-void on_message(const char* message) {
-    printf("Received: %s\n", message);
-}
-
-void on_error(int code, const char* message) {
-    printf("Error: %d - %s\n", code, message);
-}
-
-void on_connect() {
-    printf("Connected!\n");
-}
-
-void on_close(const char* reason) {
-    printf("Closed: %s\n", reason);
-}
-
-// Create data socket
-fyers_data_socket_t* socket = fyers_data_socket_create(
-    "CLIENT_ID:ACCESS_TOKEN",
-    false,  // litemode
-    true,   // reconnect
-    5,      // reconnect_retry
-    NULL,   // log_path
-    on_message,
-    on_error,
-    on_connect,
-    on_close
-);
-
-// Connect
-fyers_data_socket_connect(socket);
-
-// Subscribe to symbols
-const char* symbols[] = {"NSE:SBIN-EQ", "NSE:HDFC-EQ"};
-fyers_data_socket_subscribe(socket, symbols, 2, "SymbolUpdate");
-
-// Keep running
-fyers_data_socket_keep_running(socket);
-
-// Cleanup
-fyers_data_socket_destroy(socket);
-```
-
 ## API Reference
 
 ### Core API
@@ -258,15 +203,6 @@ fyers_data_socket_destroy(socket);
 - `fyers_model_get_depth()` - Get market depth
 - `fyers_model_get_option_chain()` - Get option chain
 
-### WebSocket APIs
-
-- `fyers_data_socket_create()` - Create data WebSocket
-- `fyers_data_socket_connect()` - Connect to data WebSocket
-- `fyers_data_socket_subscribe()` - Subscribe to symbols
-- `fyers_order_socket_create()` - Create order WebSocket
-- `fyers_order_socket_connect()` - Connect to order WebSocket
-- `fyers_tbt_socket_create()` - Create TBT WebSocket (if enabled)
-
 ## Error Handling
 
 All functions return `fyers_error_t` enum values:
@@ -290,7 +226,6 @@ See the `examples/` directory for complete examples:
 - `auth_example.c` - Authentication flow
 - `trading_example.c` - Trading operations
 - `market_data_example.c` - Market data queries
-- `websocket_example.c` - WebSocket usage
 
 ## License
 
@@ -315,15 +250,12 @@ sudo apt-get install -y \
     cmake \
     libcurl4-openssl-dev \
     libcjson-dev \
-    libssl-dev \
-    libwebsockets-dev \
-    libprotobuf-dev \
-    protobuf-compiler
+    libssl-dev
 ```
 
 ### macOS
 ```bash
-brew install cmake curl cjson openssl libwebsockets protobuf
+brew install cmake curl cjson openssl
 ```
 
 ### Windows
@@ -331,7 +263,7 @@ brew install cmake curl cjson openssl libwebsockets protobuf
 - Install CMake
 - Install vcpkg and install packages:
   ```bash
-  vcpkg install curl cjson openssl libwebsockets protobuf
+  vcpkg install curl cjson openssl
   ```
 
 ## Building
@@ -383,16 +315,4 @@ If CMake fails to find dependencies:
 - Linux: Ensure development packages are installed (`-dev` suffix)
 - macOS: Check Homebrew installation paths
 - Windows: Verify vcpkg integration
-
-### WebSocket Support
-
-If WebSocket features are disabled:
-- Install `libwebsockets` development package
-- Rebuild with `-DFYERS_ENABLE_WEBSOCKETS=ON`
-
-### TBT WebSocket Support
-
-If TBT WebSocket is disabled:
-- Install `protobuf` development package
-- Rebuild with `-DFYERS_ENABLE_TBT=ON`
 

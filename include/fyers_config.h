@@ -13,8 +13,6 @@ extern "C" {
 // API URLs
 #define FYERS_API_BASE_URL "https://api-t1.fyers.in/api/v3"
 #define FYERS_DATA_API_BASE_URL "https://api-t1.fyers.in/data"
-#define FYERS_WEBSOCKET_DATA_URL "wss://socket.fyers.in/hsm/v1-5/prod"
-#define FYERS_WEBSOCKET_ORDER_URL "wss://socket.fyers.in/trade/v3"
 
 // API Endpoints
 #define FYERS_ENDPOINT_PROFILE "/profile"
@@ -48,8 +46,6 @@ extern "C" {
 // Limits
 #define FYERS_MAX_SYMBOLS_QUOTES 50
 #define FYERS_MAX_SYMBOLS_BASKET 10
-#define FYERS_MAX_SYMBOLS_WEBSOCKET 200
-#define FYERS_MAX_SYMBOLS_DATA_SOCKET 5000
 
 #ifdef __cplusplus
 }

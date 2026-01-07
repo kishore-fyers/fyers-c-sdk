@@ -50,28 +50,64 @@ if(NOT CJSON_INCLUDE_DIR OR NOT CJSON_LIBRARY)
     message(FATAL_ERROR "cJSON not found. Please install libcjson-dev (Linux) or cjson (macOS)")
 endif()
 
-# Find WebSocket library (libwebsockets)
-find_package(LibWebSockets QUIET)
-if(NOT LibWebSockets_FOUND)
-    # Try pkg-config if available
-    if(PkgConfig_FOUND)
-        pkg_check_modules(LIBWEBSOCKETS QUIET libwebsockets)
-        if(LIBWEBSOCKETS_FOUND)
-            set(LibWebSockets_INCLUDE_DIRS ${LIBWEBSOCKETS_INCLUDE_DIRS})
-            set(LibWebSockets_LIBRARIES ${LIBWEBSOCKETS_LIBRARIES})
-        endif()
+# Find or build libwebsockets from parent directory
+set(LWS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../libwebsockets")
+if(EXISTS "${LWS_DIR}/CMakeLists.txt")
+    # Use libwebsockets from parent directory
+    set(LWS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/libwebsockets")
+    set(LWS_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/lws_install")
+    
+    # Build libwebsockets as static library
+    include(ExternalProject)
+    ExternalProject_Add(
+        libwebsockets_ext
+        SOURCE_DIR "${LWS_DIR}"
+        BINARY_DIR "${LWS_BUILD_DIR}"
+        INSTALL_DIR "${LWS_INSTALL_DIR}"
+        CMAKE_ARGS
+            -DCMAKE_INSTALL_PREFIX=${LWS_INSTALL_DIR}
+            -DLWS_WITHOUT_TESTAPPS=ON
+            -DLWS_WITHOUT_TEST_PING=ON
+            -DLWS_WITHOUT_TEST_CLIENT=ON
+            -DLWS_WITHOUT_TEST_SERVER=ON
+            -DLWS_WITHOUT_TEST_SERVER_EXTPOLL=ON
+            -DLWS_WITHOUT_TEST_ECHO=ON
+            -DLWS_WITHOUT_TEST_FRAGGLE=ON
+            -DLWS_WITHOUT_TEST_ECHO_CLIENT=ON
+            -DLWS_WITHOUT_TEST_ECHO_SERVER=ON
+            -DLWS_WITH_SHARED=OFF
+            -DLWS_WITH_STATIC=ON
+            -DLWS_WITH_HTTP2=ON
+            -DLWS_WITH_LWSWS=OFF
+            -DLWS_IPV6=ON
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        BUILD_ALWAYS OFF
+    )
+    
+    set(LWS_INCLUDE_DIR "${LWS_INSTALL_DIR}/include")
+    set(LWS_LIBRARY "${LWS_INSTALL_DIR}/lib/libwebsockets.a")
+else()
+    # Try to find system-installed libwebsockets
+    find_path(LWS_INCLUDE_DIR 
+        libwebsockets.h
+        PATHS
+            /usr/local/include
+            /usr/include
+            /opt/local/include
+            /opt/homebrew/include
+    )
+    find_library(LWS_LIBRARY 
+        websockets
+        PATHS
+            /usr/local/lib
+            /usr/lib
+            /opt/local/lib
+            /opt/homebrew/lib
+    )
+    
+    if(NOT LWS_INCLUDE_DIR OR NOT LWS_LIBRARY)
+        message(FATAL_ERROR "libwebsockets not found. Please build libwebsockets in ../libwebsockets or install system package")
     endif()
-    if(NOT LibWebSockets_FOUND)
-        message(WARNING "libwebsockets not found. WebSocket features will be disabled.")
-        set(BUILD_WEBSOCKETS OFF)
-    endif()
-endif()
-
-# Find protobuf (for TBT socket)
-find_package(Protobuf QUIET)
-if(NOT Protobuf_FOUND)
-    message(WARNING "protobuf not found. TBT WebSocket will be disabled.")
-    set(BUILD_TBT_WEBSOCKET OFF)
 endif()
 
 # Source files
@@ -82,29 +118,27 @@ set(FYERS_CORE_SOURCES
     src/fyers_http_client.c
     src/fyers_session.c
     src/fyers_model.c
-)
-
-set(FYERS_WEBSOCKET_SOURCES
     src/fyers_data_ws.c
     src/fyers_order_ws.c
 )
 
-if(BUILD_TBT_WEBSOCKET)
-    list(APPEND FYERS_WEBSOCKET_SOURCES src/fyers_tbt_ws.c)
-endif()
-
 set(FYERS_ALL_SOURCES
     ${FYERS_CORE_SOURCES}
-    ${FYERS_WEBSOCKET_SOURCES}
 )
 
 # Create library
 add_library(fyers-api-c ${FYERS_ALL_SOURCES})
 
+# Make sure libwebsockets is built before our library (if using ExternalProject)
+if(EXISTS "${LWS_DIR}/CMakeLists.txt")
+    add_dependencies(fyers-api-c libwebsockets_ext)
+endif()
+
 target_include_directories(fyers-api-c PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
     ${CJSON_INCLUDE_DIR}
+    ${LWS_INCLUDE_DIR}
 )
 
 target_link_libraries(fyers-api-c PUBLIC
@@ -112,18 +146,8 @@ target_link_libraries(fyers-api-c PUBLIC
     ${CJSON_LIBRARY}
     Threads::Threads
     ${OPENSSL_LIBRARIES}
+    ${LWS_LIBRARY}
 )
-
-if(LibWebSockets_FOUND)
-    target_include_directories(fyers-api-c PUBLIC ${LibWebSockets_INCLUDE_DIRS})
-    target_link_libraries(fyers-api-c PUBLIC ${LibWebSockets_LIBRARIES})
-    target_compile_definitions(fyers-api-c PUBLIC FYERS_ENABLE_WEBSOCKETS=1)
-endif()
-
-if(Protobuf_FOUND)
-    target_link_libraries(fyers-api-c PUBLIC protobuf::libprotobuf)
-    target_compile_definitions(fyers-api-c PUBLIC FYERS_ENABLE_TBT=1)
-endif()
 
 # Install
 install(TARGETS fyers-api-c

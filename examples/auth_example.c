@@ -1283,6 +1283,7 @@ void fy_get_option_chain(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+
 int main() {
     // Replace with your app credentials
     // const char* client_id = "M0R4WW1PYU-100";
@@ -1349,26 +1350,13 @@ int main() {
     // fy_convert_position(session); // convert position
     
     // Broker Config
-    fy_get_broker_config(session); // get broker config
+    // fy_get_broker_config(session); // get broker config
 
     // Market Data
     // fy_get_history(session); // get history
     // fy_get_quotes(session); // get quotes
     // fy_get_depth(session); // get depth
     // fy_get_option_chain(session); // get option chain
-
-    // WebSocket
-    // General Socket 
-    // fy_create_general_socket(session); // create general socket
-    // fy_create_order_socket(session); // create order socket
-    // fy_create_position_socket(session); // create position socket
-    // fy_create_trade_socket(session); // create trade socket
-
-    // Market Data Socket
-    // fy_symbol_update(session); // Market Data Symbol Update
-    // fy_symbol_update_lite(session); // Market Data Symbol Update LITE
-    // fy_index_update(session); // Market Data Index Update
-    // fy_depth_update(session); // Market Data Depth Update
 
 
 

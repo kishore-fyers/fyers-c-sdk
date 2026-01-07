@@ -12,9 +12,11 @@ target_link_libraries(trading_example fyers-api-c)
 add_executable(market_data_example market_data_example.c)
 target_link_libraries(market_data_example fyers-api-c)
 
-# Example: WebSocket
-if(FYERS_ENABLE_WEBSOCKETS)
-    add_executable(websocket_example websocket_example.c)
-    target_link_libraries(websocket_example fyers-api-c)
-endif()
+# Example: Data WebSocket
+add_executable(data_ws_example data_ws_example.c)
+target_link_libraries(data_ws_example fyers-api-c)
+
+# Example: Order WebSocket
+add_executable(order_ws_example order_ws_example.c)
+target_link_libraries(order_ws_example fyers-api-c)
 
