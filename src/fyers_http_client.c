@@ -3,11 +3,13 @@
  * @brief HTTP client implementation using libcurl
  */
 
+#include "fyers_http_client.h"
 #include "fyers_api.h"
 #include "fyers_config.h"
 #include "fyers_logger.h"
 #include "fyers_http_client.h"
 #include <curl/curl.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -136,10 +138,10 @@ fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    // Print raw API response JSON
-    if (response->data && response->size > 0 && res == CURLE_OK) {
-        printf("%.*s\n", (int)response->size, response->data);
-    }
+  // Print raw API response JSON
+  // if (response->data && response->size > 0 && res == CURLE_OK) {
+  //     printf("%.*s\n", (int)response->size, response->data);
+  // }
 
     curl_slist_free_all(headers);
     return response;
@@ -205,10 +207,10 @@ fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    // Print raw API response JSON
-    if (response->data && response->size > 0 && res == CURLE_OK) {
-        printf("%.*s\n", (int)response->size, response->data);
-    }
+  // Print raw API response JSON
+  // if (response->data && response->size > 0 && res == CURLE_OK) {
+  //     printf("%.*s\n", (int)response->size, response->data);
+  // }
 
     curl_slist_free_all(headers);
     return response;
@@ -271,9 +273,9 @@ fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
     }
 
     // Print raw API response JSON
-    if (response->data && response->size > 0 && res == CURLE_OK) {
-        printf("%.*s\n", (int)response->size, response->data);
-    }
+    // if (response->data && response->size > 0 && res == CURLE_OK) {
+    //     printf("%.*s\n", (int)response->size, response->data);
+    // }
 
     curl_slist_free_all(headers);
     return response;
@@ -335,11 +337,10 @@ fyers_response_t* fyers_http_client_delete(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    // Print raw API response JSON
-    if (response->data && response->size > 0 && res == CURLE_OK) {
-        printf("%.*s\n", (int)response->size, response->data);
-    }
-
+  // Print raw API response JSON
+  // if (response->data && response->size > 0 && res == CURLE_OK) {
+  //     printf("%.*s\n", (int)response->size, response->data);
+  // }
     curl_slist_free_all(headers);
     return response;
 }
@@ -400,10 +401,10 @@ fyers_response_t* fyers_http_client_put(fyers_http_client_t* client,
         response->error = FYERS_ERROR;
     }
 
-    // Print raw API response JSON
-    if (response->data && response->size > 0 && res == CURLE_OK) {
-        printf("%.*s\n", (int)response->size, response->data);
-    }
+  // Print raw API response JSON
+  // if (response->data && response->size > 0 && res == CURLE_OK) {
+  //     printf("%.*s\n", (int)response->size, response->data);
+  // }
 
     curl_slist_free_all(headers);
     return response;
