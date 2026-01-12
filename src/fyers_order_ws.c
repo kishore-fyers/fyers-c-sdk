@@ -337,8 +337,8 @@ static void handle_order_message(fyers_order_ws_t* ws, const char* message) {
             if (json_str) {
                 ws->on_general(ws, json_str);
                 free(json_str);
-            }
         }
+    }
     }
     
     if (parsed_result) {
@@ -630,8 +630,8 @@ fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws) {
         if (ws->on_connect) {
             ws->on_connect(ws);
         }
-        
-        return FYERS_OK;
+    
+    return FYERS_OK;
     } else {
         return FYERS_ERROR_NETWORK;
     }

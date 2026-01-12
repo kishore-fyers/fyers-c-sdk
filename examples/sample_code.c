@@ -1283,6 +1283,194 @@ void fy_get_option_chain(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+void fy_create_alert(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFpLYU1iRlJBTWVXZnVuTExRa2ttd2tFM3ZIdlJRbzdxUVBmTjBmRm5uVXZXRDRndVpnekw4X2NNSTZBRWtCUktPemhqSTVqQlBFYy05SERIUEZGUW1tMER6NE9YOUZCZmRwLXQ1MllJQmZfWXpqQT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJjMDFlNDQ3ZDc1YzNjZDIwYTQ3YTQ0ZjA3NjJmNTM3Mjc5YjJmZWY4NGY4NzY4MTk4NTQwOTdkMiIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY4MjY0MjAwLCJpYXQiOjE3NjgyMDM5MTYsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2ODIwMzkxNiwic3ViIjoiYWNjZXNzX3Rva2VuIn0.GRxdraCQNX0vYBYlTQs3YkRUINit-rZvuJqbHAUSM3E");
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Creating fy_create_alert\n");
+    cJSON* json = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(json, "agent", "fyers-api");
+    cJSON_AddNumberToObject(json, "alert-type", 1);
+    cJSON_AddStringToObject(json, "name", "NSE:NIFTY50-INDEX");
+    cJSON_AddStringToObject(json, "symbol", "NSE:NIFTY50-INDEX");
+    cJSON_AddStringToObject(json, "comparisonType", "LTP");
+    cJSON_AddStringToObject(json, "condition", "LTE");
+    cJSON_AddNumberToObject(json, "value", 25421.45);
+
+    const char* params = cJSON_Print(json);
+
+    fyers_response_t* response = fyers_model_create_alert(model, params);
+    printf("%s\n", response->data);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_get_alert(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFpLYU1iRlJBTWVXZnVuTExRa2ttd2tFM3ZIdlJRbzdxUVBmTjBmRm5uVXZXRDRndVpnekw4X2NNSTZBRWtCUktPemhqSTVqQlBFYy05SERIUEZGUW1tMER6NE9YOUZCZmRwLXQ1MllJQmZfWXpqQT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJjMDFlNDQ3ZDc1YzNjZDIwYTQ3YTQ0ZjA3NjJmNTM3Mjc5YjJmZWY4NGY4NzY4MTk4NTQwOTdkMiIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY4MjY0MjAwLCJpYXQiOjE3NjgyMDM5MTYsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2ODIwMzkxNiwic3ViIjoiYWNjZXNzX3Rva2VuIn0.GRxdraCQNX0vYBYlTQs3YkRUINit-rZvuJqbHAUSM3E");
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Getting fy_get_alert\n");
+    cJSON* json = cJSON_CreateObject();
+    cJSON_AddStringToObject(json, "agent", "fyers-api");
+    cJSON_AddNumberToObject(json, "archive", 1);
+    const char* params = cJSON_Print(json);
+
+    fyers_response_t* response = fyers_model_get_alert(model, params);
+    printf("%s\n", response->data);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_update_alert(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFpLYU1iRlJBTWVXZnVuTExRa2ttd2tFM3ZIdlJRbzdxUVBmTjBmRm5uVXZXRDRndVpnekw4X2NNSTZBRWtCUktPemhqSTVqQlBFYy05SERIUEZGUW1tMER6NE9YOUZCZmRwLXQ1MllJQmZfWXpqQT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJjMDFlNDQ3ZDc1YzNjZDIwYTQ3YTQ0ZjA3NjJmNTM3Mjc5YjJmZWY4NGY4NzY4MTk4NTQwOTdkMiIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY4MjY0MjAwLCJpYXQiOjE3NjgyMDM5MTYsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2ODIwMzkxNiwic3ViIjoiYWNjZXNzX3Rva2VuIn0.GRxdraCQNX0vYBYlTQs3YkRUINit-rZvuJqbHAUSM3E");
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Updating fy_update_alert\n");
+    cJSON* json = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(json, "alertId", "6134468");
+    cJSON_AddStringToObject(json, "agent", "fyers-api");
+    cJSON_AddNumberToObject(json, "alert-type", 1);
+    cJSON_AddStringToObject(json, "name", "NSE:NIFTY50-INDEX");
+    cJSON_AddStringToObject(json, "symbol", "NSE:NIFTY50-INDEX");
+    cJSON_AddStringToObject(json, "comparisonType", "LTP");
+    cJSON_AddStringToObject(json, "condition", "LTE");
+    cJSON_AddNumberToObject(json, "value", 25423.45);
+
+    const char* params = cJSON_Print(json);
+
+    fyers_response_t* response = fyers_model_update_alert(model, params);
+    printf("%s\n", response->data);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_delete_alert(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFpLYU1iRlJBTWVXZnVuTExRa2ttd2tFM3ZIdlJRbzdxUVBmTjBmRm5uVXZXRDRndVpnekw4X2NNSTZBRWtCUktPemhqSTVqQlBFYy05SERIUEZGUW1tMER6NE9YOUZCZmRwLXQ1MllJQmZfWXpqQT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJjMDFlNDQ3ZDc1YzNjZDIwYTQ3YTQ0ZjA3NjJmNTM3Mjc5YjJmZWY4NGY4NzY4MTk4NTQwOTdkMiIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY4MjY0MjAwLCJpYXQiOjE3NjgyMDM5MTYsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2ODIwMzkxNiwic3ViIjoiYWNjZXNzX3Rva2VuIn0.GRxdraCQNX0vYBYlTQs3YkRUINit-rZvuJqbHAUSM3E");
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+
+    printf("Deleting fy_delete_alert\n");
+    cJSON* json = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(json, "alertId", "4115571");
+    cJSON_AddStringToObject(json, "agent", "fyers-api");
+    const char* params = cJSON_Print(json);
+    fyers_response_t* response = fyers_model_delete_alert(model, params);
+    printf("%s\n", response->data);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_toggle_alert(fyers_session_t* session) {
+    fyers_session_set_access_token(session, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieDowIiwieDoxIl0sImF0X2hhc2giOiJnQUFBQUFCcFpLYU1iRlJBTWVXZnVuTExRa2ttd2tFM3ZIdlJRbzdxUVBmTjBmRm5uVXZXRDRndVpnekw4X2NNSTZBRWtCUktPemhqSTVqQlBFYy05SERIUEZGUW1tMER6NE9YOUZCZmRwLXQ1MllJQmZfWXpqQT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJjMDFlNDQ3ZDc1YzNjZDIwYTQ3YTQ0ZjA3NjJmNTM3Mjc5YjJmZWY4NGY4NzY4MTk4NTQwOTdkMiIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWUswNDM5MSIsImFwcFR5cGUiOjEwMSwiZXhwIjoxNzY4MjY0MjAwLCJpYXQiOjE3NjgyMDM5MTYsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc2ODIwMzkxNiwic3ViIjoiYWNjZXNzX3Rva2VuIn0.GRxdraCQNX0vYBYlTQs3YkRUINit-rZvuJqbHAUSM3E");
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    
+    if (!client_id || !access_token) {
+        fprintf(stderr, "Missing client_id or access_token in session\n");
+        return; 
+    }
+
+    fyers_model_t* model = fyers_model_create(
+        client_id,
+        access_token,
+        false,
+        NULL,
+        FYERS_LOG_INFO
+    );
+
+    if (!model) {
+        fprintf(stderr, "Failed to create model\n");
+        return;
+    }
+    printf("Toggling fy_toggle_alert\n");
+    cJSON* json = cJSON_CreateObject();
+    cJSON_AddStringToObject(json, "alertId", "4115559");
+    const char* params = cJSON_Print(json);
+
+    fyers_response_t* response = fyers_model_toggle_alert(model, params);
+    printf("%s\n", response->data);
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+
+}
 
 int main() {
     // Replace with your app credentials
@@ -1358,7 +1546,12 @@ int main() {
     // fy_get_depth(session); // get depth
     // fy_get_option_chain(session); // get option chain
 
-
+    // Pirce Alerts
+    // fy_create_alert(session); // create alert
+    // fy_get_alert(session); // get alert
+    // fy_update_alert(session); // update alert
+    // fy_delete_alert(session); // delete alert
+    // fy_toggle_alert(session); // toggle alert
 
     fyers_session_destroy(session);
     fyers_cleanup();

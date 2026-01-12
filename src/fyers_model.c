@@ -367,43 +367,27 @@ fyers_response_t* fyers_model_create_alert(fyers_model_t* model, const char* ale
     return make_post_request(model, FYERS_ENDPOINT_PRICE_ALERT, alert_json);
 }
 
-fyers_response_t* fyers_model_get_alert(fyers_model_t* model, const char* alert_id, int archive) {
-    char params[512] = "";
-    if (alert_id) {
-        snprintf(params, sizeof(params), "id=%s", alert_id);
+fyers_response_t* fyers_model_get_alert(fyers_model_t* model, const char* alert_json) {
+    char* query_str = json_to_query_string(alert_json);
+    if (!query_str) {
+        // If JSON parsing fails, return NULL or try with original params
+        return NULL;
     }
-    if (archive) {
-        if (strlen(params) > 0) {
-            strncat(params, "&", sizeof(params) - strlen(params) - 1);
-        }
-        strncat(params, "archive=1", sizeof(params) - strlen(params) - 1);
-    }
-    return make_get_request(model, FYERS_ENDPOINT_PRICE_ALERT, strlen(params) > 0 ? params : NULL, false);
+    return make_get_request(model, FYERS_ENDPOINT_PRICE_ALERT, query_str, false);
 }
 
 fyers_response_t* fyers_model_update_alert(fyers_model_t* model, const char* alert_json) {
     return make_put_request(model, FYERS_ENDPOINT_PRICE_ALERT, alert_json);
 }
 
-fyers_response_t* fyers_model_delete_alert(fyers_model_t* model, const char* alert_id) {
+fyers_response_t* fyers_model_delete_alert(fyers_model_t* model, const char* alert_json) {
     cJSON* json = cJSON_CreateObject();
-    cJSON_AddStringToObject(json, "id", alert_id);
-    char* json_str = cJSON_Print(json);
-    cJSON_Delete(json);
-    
-    fyers_response_t* response = make_delete_request(model, FYERS_ENDPOINT_PRICE_ALERT, json_str);
-    free(json_str);
+    fyers_response_t* response = make_delete_request(model, FYERS_ENDPOINT_PRICE_ALERT, alert_json);
     return response;
 }
 
 fyers_response_t* fyers_model_toggle_alert(fyers_model_t* model, const char* alert_id) {
-    cJSON* json = cJSON_CreateObject();
-    cJSON_AddStringToObject(json, "alertId", alert_id);
-    char* json_str = cJSON_Print(json);
-    cJSON_Delete(json);
-    
-    fyers_response_t* response = make_patch_request(model, FYERS_ENDPOINT_TOGGLE_ALERT, json_str);
-    free(json_str);
+    fyers_response_t* response = make_put_request(model, FYERS_ENDPOINT_TOGGLE_ALERT, alert_id);
     return response;
 }
 

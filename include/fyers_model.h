@@ -77,7 +77,7 @@ fyers_response_t* fyers_model_get_gtt_orderbook(fyers_model_t* model);
 
 // Price alerts
 fyers_response_t* fyers_model_create_alert(fyers_model_t* model, const char* alert_json);
-fyers_response_t* fyers_model_get_alert(fyers_model_t* model, const char* alert_id, int archive);
+fyers_response_t* fyers_model_get_alert(fyers_model_t* model, const char* alert_id);
 fyers_response_t* fyers_model_update_alert(fyers_model_t* model, const char* alert_json);
 fyers_response_t* fyers_model_delete_alert(fyers_model_t* model, const char* alert_id);
 fyers_response_t* fyers_model_toggle_alert(fyers_model_t* model, const char* alert_id);
