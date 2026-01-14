@@ -203,6 +203,13 @@ fyers_cleanup();
 - `fyers_model_get_depth()` - Get market depth
 - `fyers_model_get_option_chain()` - Get option chain
 
+### Price Alert APIs
+- `fyers_model_create_alert()` - Create Price Alerts
+- `fyers_model_get_alert()`    - Get Price Alerts
+- `fyers_model_update_alert()` - Update Price Alerts
+- `fyers_model_delete_alert()` - Delete Price Alerts
+- `fyers_model_toggle_alert()` - Toggle Price Alerts
+
 ## Error Handling
 
 All functions return `fyers_error_t` enum values:
@@ -223,9 +230,51 @@ All functions return `fyers_error_t` enum values:
 ## Examples
 
 See the `examples/` directory for complete examples:
-- `auth_example.c` - Authentication flow
-- `trading_example.c` - Trading operations
-- `market_data_example.c` - Market data queries
+
+### REST API Examples
+- `sample_code.c` - Comprehensive example demonstrating all REST API operations including:
+  - Authentication (OAuth2 flow)
+  - User APIs (profile, funds, holdings, positions, logout)
+  - Trading APIs (place order, modify order, cancel order, multi-order, multileg order)
+  - GTT Orders (create, modify, cancel, get orderbook)
+  - Position Management (exit positions, convert positions)
+  - Market Data APIs (quotes, history, depth, option chain)
+  - Price Alerts (create, get, update, delete, toggle)
+  - Broker Configuration
+
+### WebSocket Examples
+
+#### Data WebSocket (Market Data)
+- `symbol_update.c` - Real-time symbol/quote updates
+- `depth_update.c` - Market depth (order book) updates
+- `index_update.c` - Index updates
+- `lite_symbol_update.c` - Lite mode symbol updates
+- `unsubscribe_update.c` - Unsubscribe from symbols
+
+#### Order WebSocket (Order Updates)
+- `on_general.c` - General order WebSocket updates
+- `on_orders.c` - Order status updates
+- `on_position.c` - Position updates
+- `on_trade.c` - Trade execution updates
+
+### C++ Examples
+- `cpp_test.cpp` - C++ example demonstrating how to use the C SDK from C++ code
+
+### Building Examples
+
+After building the SDK, examples can be built and run from the `build/examples/` directory:
+
+```bash
+cd build/examples
+./sample_code          # REST API examples
+./symbol_update        # Data WebSocket - symbol updates
+./depth_update         # Data WebSocket - depth updates
+./index_update         # Data WebSocket - index updates
+./on_orders            # Order WebSocket - order updates
+./on_position          # Order WebSocket - position updates
+./on_trade             # Order WebSocket - trade updates
+./cpp_test             # C++ example
+```
 
 ## License
 
@@ -302,9 +351,23 @@ After building, test with examples:
 
 ```bash
 cd build/examples
-./auth_example
-./trading_example
-./market_data_example
+# REST API example (comprehensive)
+./sample_code
+
+# Data WebSocket examples
+./symbol_update
+./depth_update
+./index_update
+./lite_symbol_update
+
+# Order WebSocket examples
+./on_orders
+./on_position
+./on_trade
+./on_general
+
+# C++ example
+./cpp_test
 ```
 
 ## Troubleshooting

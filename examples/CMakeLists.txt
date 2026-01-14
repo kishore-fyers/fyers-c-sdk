@@ -38,3 +38,15 @@ target_link_libraries(on_position fyers-api-c)
 add_executable(on_trade on_trade.c)
 target_link_libraries(on_trade fyers-api-c)
 
+# Example: Auth Example
+add_executable(sample_code sample_code.c)
+target_link_libraries(sample_code fyers-api-c)
+
+# Example: C++ Test
+add_executable(cpp_test cpp_test.cpp)
+target_link_libraries(cpp_test fyers-api-c)
+set_target_properties(cpp_test PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+)
+
