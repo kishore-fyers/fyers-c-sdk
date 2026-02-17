@@ -21,8 +21,19 @@ Official C/C++ SDK for the Fyers Trading API v3. This SDK provides a C-style API
 - libcurl (for HTTP requests)
 - cJSON (for JSON parsing)
 - OpenSSL (for cryptographic operations)
+- libwebsockets (for WebSocket support — data & order streams)
 
-## Installation
+## Required packages (install before building)
+
+These are the packages you need to install on your system. Install them using the commands below for your platform.
+
+| Package       | Purpose              | Linux (apt)              | macOS (Homebrew)   | Windows (vcpkg)   |
+|---------------|----------------------|---------------------------|--------------------|-------------------|
+| **cmake**     | Build system         | `cmake`                   | `cmake`            | CMake (installer) |
+| **curl**      | HTTP client          | `libcurl4-openssl-dev`    | `curl`             | `curl`            |
+| **cJSON**     | JSON parsing         | `libcjson-dev`            | `cjson`            | `cjson`           |
+| **OpenSSL**   | TLS / crypto         | `libssl-dev`              | `openssl`          | `openssl`         |
+| **libwebsockets** | WebSocket client | `libwebsockets-dev`       | `libwebsockets`    | `libwebsockets`   |
 
 ### Linux (Ubuntu/Debian)
 
@@ -33,13 +44,51 @@ sudo apt-get install -y \
     cmake \
     libcurl4-openssl-dev \
     libcjson-dev \
-    libssl-dev
+    libssl-dev \
+    libwebsockets-dev
 ```
 
 ### macOS
 
 ```bash
-brew install cmake curl cjson openssl
+brew install cmake curl cjson openssl libwebsockets
+```
+
+### Windows
+
+- Install [Visual Studio](https://visualstudio.microsoft.com/) (2019 or later) with "Desktop development with C++".
+- Install [CMake](https://cmake.org/download/).
+- Install [vcpkg](https://vcpkg.io/), then:
+
+```bash
+vcpkg install curl cjson openssl libwebsockets
+```
+
+Use the vcpkg toolchain when configuring CMake (see "Windows Build" under Building below).
+
+## Installation
+
+### Linux (Ubuntu/Debian)
+
+If you have not installed the required packages yet, run:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+    build-essential \
+    cmake \
+    libcurl4-openssl-dev \
+    libcjson-dev \
+    libssl-dev \
+    libwebsockets-dev
+```
+
+### macOS
+
+If you have not installed the required packages yet, run:
+
+```bash
+brew install cmake curl cjson openssl libwebsockets
 ```
 
 ### Building
@@ -291,6 +340,8 @@ For issues and questions, please open an issue on GitHub.
 
 ## Prerequisites
 
+Install the required packages first (see "Required packages" section above). Summary:
+
 ### Linux (Ubuntu/Debian)
 ```bash
 sudo apt-get update
@@ -299,12 +350,13 @@ sudo apt-get install -y \
     cmake \
     libcurl4-openssl-dev \
     libcjson-dev \
-    libssl-dev
+    libssl-dev \
+    libwebsockets-dev
 ```
 
 ### macOS
 ```bash
-brew install cmake curl cjson openssl
+brew install cmake curl cjson openssl libwebsockets
 ```
 
 ### Windows
@@ -312,7 +364,7 @@ brew install cmake curl cjson openssl
 - Install CMake
 - Install vcpkg and install packages:
   ```bash
-  vcpkg install curl cjson openssl
+  vcpkg install curl cjson openssl libwebsockets
   ```
 
 ## Building

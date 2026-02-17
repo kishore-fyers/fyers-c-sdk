@@ -7,7 +7,7 @@
 #define FYERS_LOGGER_H
 
 #include "fyers_api.h"
-#include <stdio.h>
+// #include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
