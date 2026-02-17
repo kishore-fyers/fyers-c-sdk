@@ -1,0 +1,23 @@
+README.md
+  bb40ea85a0075d39 24,26-67,73-74,82-83,88,91,343-344,353-354,359,367
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.37",
+  "base_commit_sha": "0c5629ba9c18f382504505edf7a137bbc7761203",
+  "prompts": {
+    "bb40ea85a0075d39": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "1634f942-8010-4212-9b02-c53ea283d63a",
+        "model": "default"
+      },
+      "human_author": "kishore-fyers <kishorekumar@fyers.in>",
+      "messages": [],
+      "total_additions": 57,
+      "total_deletions": 5,
+      "accepted_lines": 57,
+      "overriden_lines": 0
+    }
+  }
+}
