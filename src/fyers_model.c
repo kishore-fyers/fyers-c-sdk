@@ -391,8 +391,62 @@ fyers_response_t* fyers_model_toggle_alert(fyers_model_t* model, const char* ale
     return response;
 }
 
-fyers_response_t* fyers_model_get_trending_alert(fyers_model_t* model) {
-    return make_get_request(model, FYERS_ENDPOINT_TRIGGERED_ALERTS, NULL, false);
+// Smart order APIs
+fyers_response_t* fyers_model_create_smart_order_limit(fyers_model_t* model, const char* request_json) {
+    return make_post_request(model, FYERS_ENDPOINT_CREATE_SMARTORDER_LIMIT, request_json);
+}
+
+fyers_response_t* fyers_model_create_smart_order_step(fyers_model_t* model, const char* request_json) {
+    return make_post_request(model, FYERS_ENDPOINT_CREATE_SMARTORDER_STEP, request_json);
+}
+
+fyers_response_t* fyers_model_create_smart_order_sip(fyers_model_t* model, const char* request_json) {
+    return make_post_request(model, FYERS_ENDPOINT_CREATE_SMARTORDER_SIP, request_json);
+}
+
+fyers_response_t* fyers_model_create_smart_order_trail(fyers_model_t* model, const char* request_json) {
+    return make_post_request(model, FYERS_ENDPOINT_CREATE_SMARTORDER_TRAIL, request_json);
+}
+
+fyers_response_t* fyers_model_modify_smart_order(fyers_model_t* model, const char* request_json) {
+    return make_patch_request(model, FYERS_ENDPOINT_MODIFY_SMARTORDER, request_json);
+}
+
+fyers_response_t* fyers_model_cancel_smart_order(fyers_model_t* model, const char* request_json) {
+    return make_delete_request(model, FYERS_ENDPOINT_CANCEL_SMARTORDER, request_json);
+}
+
+fyers_response_t* fyers_model_pause_smart_order(fyers_model_t* model, const char* request_json) {
+    return make_patch_request(model, FYERS_ENDPOINT_PAUSE_SMARTORDER, request_json);
+}
+
+fyers_response_t* fyers_model_resume_smart_order(fyers_model_t* model, const char* request_json) {
+    return make_patch_request(model, FYERS_ENDPOINT_RESUME_SMARTORDER, request_json);
+}
+
+fyers_response_t* fyers_model_get_smart_order_book(fyers_model_t* model, const char* query_params) {
+    return make_get_request(model, FYERS_ENDPOINT_SMARTORDER_ORDERBOOK, query_params, false);
+}
+
+fyers_response_t* fyers_model_create_smart_exit_trigger(fyers_model_t* model, const char* request_json) {
+    return make_post_request(model, FYERS_ENDPOINT_SMART_EXIT_TRIGGER, request_json);
+}
+
+fyers_response_t* fyers_model_get_smart_exit_trigger(fyers_model_t* model, const char* flow_id) {
+    char params[256] = "";
+    if (flow_id && flow_id[0] != '\0') {
+        snprintf(params, sizeof(params), "flowId=%s", flow_id);
+    }
+    return make_get_request(model, FYERS_ENDPOINT_SMART_EXIT_TRIGGER,
+                            (flow_id && flow_id[0] != '\0') ? params : NULL, false);
+}
+
+fyers_response_t* fyers_model_update_smart_exit_trigger(fyers_model_t* model, const char* request_json) {
+    return make_put_request(model, FYERS_ENDPOINT_SMART_EXIT_TRIGGER, request_json);
+}
+
+fyers_response_t* fyers_model_activate_deactivate_smart_exit_trigger(fyers_model_t* model, const char* request_json) {
+    return make_post_request(model, FYERS_ENDPOINT_ACTIVATE_SMART_EXIT_TRIGGER, request_json);
 }
 
 // Logout

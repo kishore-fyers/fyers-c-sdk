@@ -81,7 +81,21 @@ fyers_response_t* fyers_model_get_alert(fyers_model_t* model, const char* alert_
 fyers_response_t* fyers_model_update_alert(fyers_model_t* model, const char* alert_json);
 fyers_response_t* fyers_model_delete_alert(fyers_model_t* model, const char* alert_id);
 fyers_response_t* fyers_model_toggle_alert(fyers_model_t* model, const char* alert_id);
-fyers_response_t* fyers_model_get_trending_alert(fyers_model_t* model);
+
+// Smart order APIs
+fyers_response_t* fyers_model_create_smart_order_limit(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_create_smart_order_step(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_create_smart_order_sip(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_create_smart_order_trail(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_modify_smart_order(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_cancel_smart_order(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_pause_smart_order(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_resume_smart_order(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_get_smart_order_book(fyers_model_t* model, const char* query_params);
+fyers_response_t* fyers_model_create_smart_exit_trigger(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_get_smart_exit_trigger(fyers_model_t* model, const char* flow_id);
+fyers_response_t* fyers_model_update_smart_exit_trigger(fyers_model_t* model, const char* request_json);
+fyers_response_t* fyers_model_activate_deactivate_smart_exit_trigger(fyers_model_t* model, const char* request_json);
 
 // Logout
 fyers_response_t* fyers_model_logout(fyers_model_t* model);
