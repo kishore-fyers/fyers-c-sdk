@@ -423,21 +423,17 @@ fyers_response_t* fyers_model_resume_smart_order(fyers_model_t* model, const cha
     return make_patch_request(model, FYERS_ENDPOINT_RESUME_SMARTORDER, request_json);
 }
 
-fyers_response_t* fyers_model_get_smart_order_book(fyers_model_t* model, const char* query_params) {
-    return make_get_request(model, FYERS_ENDPOINT_SMARTORDER_ORDERBOOK, query_params, false);
+fyers_response_t* fyers_model_get_smart_order_book(fyers_model_t* model) {
+    return make_get_request(model, FYERS_ENDPOINT_SMARTORDER_ORDERBOOK, NULL, false);
 }
 
 fyers_response_t* fyers_model_create_smart_exit_trigger(fyers_model_t* model, const char* request_json) {
     return make_post_request(model, FYERS_ENDPOINT_SMART_EXIT_TRIGGER, request_json);
 }
 
-fyers_response_t* fyers_model_get_smart_exit_trigger(fyers_model_t* model, const char* flow_id) {
+fyers_response_t* fyers_model_get_smart_exit_trigger(fyers_model_t* model) {
     char params[256] = "";
-    if (flow_id && flow_id[0] != '\0') {
-        snprintf(params, sizeof(params), "flowId=%s", flow_id);
-    }
-    return make_get_request(model, FYERS_ENDPOINT_SMART_EXIT_TRIGGER,
-                            (flow_id && flow_id[0] != '\0') ? params : NULL, false);
+    return make_get_request(model, FYERS_ENDPOINT_SMART_EXIT_TRIGGER, NULL, false);
 }
 
 fyers_response_t* fyers_model_update_smart_exit_trigger(fyers_model_t* model, const char* request_json) {

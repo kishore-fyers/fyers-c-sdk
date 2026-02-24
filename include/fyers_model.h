@@ -91,9 +91,9 @@ fyers_response_t* fyers_model_modify_smart_order(fyers_model_t* model, const cha
 fyers_response_t* fyers_model_cancel_smart_order(fyers_model_t* model, const char* request_json);
 fyers_response_t* fyers_model_pause_smart_order(fyers_model_t* model, const char* request_json);
 fyers_response_t* fyers_model_resume_smart_order(fyers_model_t* model, const char* request_json);
-fyers_response_t* fyers_model_get_smart_order_book(fyers_model_t* model, const char* query_params);
+fyers_response_t* fyers_model_get_smart_order_book(fyers_model_t* model);
 fyers_response_t* fyers_model_create_smart_exit_trigger(fyers_model_t* model, const char* request_json);
-fyers_response_t* fyers_model_get_smart_exit_trigger(fyers_model_t* model, const char* flow_id);
+fyers_response_t* fyers_model_get_smart_exit_trigger(fyers_model_t* model);
 fyers_response_t* fyers_model_update_smart_exit_trigger(fyers_model_t* model, const char* request_json);
 fyers_response_t* fyers_model_activate_deactivate_smart_exit_trigger(fyers_model_t* model, const char* request_json);
 
