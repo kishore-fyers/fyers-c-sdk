@@ -262,7 +262,6 @@ fyers_response_t* generate_token(fyers_session_t* session) {
 
     char hash_hex[65];
     bytes_to_hex(hash, 32, hash_hex);
-    printf("hash_hex: %s\n", hash_hex);
 
     cJSON* json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, "grant_type", session->grant_type);

@@ -364,16 +364,15 @@ fyers_response_t* fyers_model_get_gtt_orderbook(fyers_model_t* model) {
 
 // Price alerts
 fyers_response_t* fyers_model_create_alert(fyers_model_t* model, const char* alert_json) {
+    cJSON* alert = cJSON_Parse(alert_json);
+    cJSON_AddStringToObject(alert, "agent", "fyers-api");
+    char *alert_params = cJSON_PrintUnformatted(alert);
+
     return make_post_request(model, FYERS_ENDPOINT_PRICE_ALERT, alert_json);
 }
 
-fyers_response_t* fyers_model_get_alert(fyers_model_t* model, const char* alert_json) {
-    char* query_str = json_to_query_string(alert_json);
-    if (!query_str) {
-        // If JSON parsing fails, return NULL or try with original params
-        return NULL;
-    }
-    return make_get_request(model, FYERS_ENDPOINT_PRICE_ALERT, query_str, false);
+fyers_response_t* fyers_model_get_alert(fyers_model_t* model) {
+    return make_get_request(model, FYERS_ENDPOINT_PRICE_ALERT, NULL, false);
 }
 
 fyers_response_t* fyers_model_update_alert(fyers_model_t* model, const char* alert_json) {
