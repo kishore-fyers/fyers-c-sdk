@@ -1,0 +1,21 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.37",
+  "base_commit_sha": "93d9eced43748658a8365b007741934f06d2a0df",
+  "prompts": {
+    "ccef3eb287a3cf9b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c2975304-5839-41ea-9042-b594eca3a29f",
+        "model": "default"
+      },
+      "human_author": "kishore-fyers <kishorekumar@fyers.in>",
+      "messages": [],
+      "total_additions": 47,
+      "total_deletions": 1599,
+      "accepted_lines": 6,
+      "overriden_lines": 1
+    }
+  }
+}
