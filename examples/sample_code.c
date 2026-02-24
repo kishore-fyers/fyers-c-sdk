@@ -55,8 +55,9 @@ void fy_get_profile(fyers_session_t* session) {
         return;
     }
     
-    printf("Getting fy_get_profile");
+    printf("Getting fy_get_profile\n");
     fyers_response_t* response = fyers_model_get_profile(model);
+    if (response) printf("fy_get_profile response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -86,8 +87,9 @@ void fy_get_funds(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_funds");
+    printf("Getting fy_get_funds\n");
     fyers_response_t* response = fyers_model_get_funds(model);
+    if (response) printf("fy_get_funds response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -115,8 +117,9 @@ void fy_get_holdings(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_holdings");
+    printf("Getting fy_get_holdings\n");
     fyers_response_t* response = fyers_model_get_holdings(model);
+    if (response) printf("fy_get_holdings response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -145,8 +148,9 @@ void fy_get_positions(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_positions");
+    printf("Getting fy_get_positions\n");
     fyers_response_t* response = fyers_model_get_positions(model);
+    if (response) printf("fy_get_positions response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -175,8 +179,9 @@ void fy_logout(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_logout");
+    printf("Getting fy_logout\n");
     fyers_response_t* response = fyers_model_logout(model);
+    if (response) printf("fy_logout response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -205,8 +210,9 @@ void fy_get_orderbook(fyers_session_t* session) {
         return;
     }
 
+    printf("Getting fy_get_orderbook\n");
     fyers_response_t* response = fyers_model_get_orderbook(model, NULL, NULL);
-    printf("Getting fy_get_orderbook");
+    if (response) printf("fy_get_orderbook response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -236,8 +242,9 @@ void fy_get_orderbook_by_order_ids(fyers_session_t* session) {
     }
 
     const char* order_ids = "26010200134575";
-    printf("Getting fy_get_orderbook_by_order_id");
+    printf("Getting fy_get_orderbook_by_order_id\n");
     fyers_response_t* response = fyers_model_get_orderbook(model, order_ids, NULL);
+    if (response) printf("fy_get_orderbook_by_order_id response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -267,8 +274,9 @@ void fy_get_orderbook_by_order_tag(fyers_session_t* session) {
     }
 
     const char* order_tag = "2:Untagged";
-    printf("Getting fy_get_orderbook_by_order_tag");
+    printf("Getting fy_get_orderbook_by_order_tag\n");
     fyers_response_t* response = fyers_model_get_orderbook(model, NULL, order_tag);
+    if (response) printf("fy_get_orderbook_by_order_tag response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -297,8 +305,9 @@ void fy_get_tradebook(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_tradebook");
+    printf("Getting fy_get_tradebook\n");
     fyers_response_t* response = fyers_model_get_tradebook(model, NULL);
+    if (response) printf("fy_get_tradebook response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -328,8 +337,9 @@ void fy_get_tradebook_by_order_tag(fyers_session_t* session) {
     }
 
     const char* order_tag = "2:Untagged";
-    printf("Getting fy_get_tradebook_by_order_tag");
+    printf("Getting fy_get_tradebook_by_order_tag\n");
     fyers_response_t* response = fyers_model_get_tradebook(model, order_tag);
+    if (response) printf("fy_get_tradebook_by_order_tag response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -358,8 +368,9 @@ void fy_get_quotes(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_quotes");
+    printf("Getting fy_get_quotes\n");
     fyers_response_t* response = fyers_model_get_quotes(model, "NSE:SBIN-EQ");
+    if (response) printf("fy_get_quotes response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -409,6 +420,7 @@ void fy_place_order(fyers_session_t* session) {
     cJSON_AddBoolToObject(json, "isSliceOrder", false);
     const char* params = cJSON_Print(json);
     fyers_response_t* response = fyers_model_place_order(model, params);
+    if (response) printf("fy_place_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -476,6 +488,7 @@ void fy_multi_order(fyers_session_t* session) {
 
     char *params = cJSON_PrintUnformatted(arr);  
     fyers_response_t* response = fyers_model_place_multi_order(model, params);
+    if (response) printf("fy_place_multi_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -547,6 +560,7 @@ void fy_place_multileg_order(fyers_session_t* session) {
     char *params = cJSON_PrintUnformatted(root);    
     
     fyers_response_t* response = fyers_model_place_multileg_order(model, params);
+    if (response) printf("fy_place_multileg_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -600,6 +614,7 @@ void fy_place_gtt_order(fyers_session_t* session) {
 
 
     fyers_response_t* response = fyers_model_place_gtt_order(model, params);
+    if (response) printf("fy_place_gtt_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -628,7 +643,7 @@ void fy_place_oco_gtt_order(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_place_oco_gtt_order \n");
+    printf("Getting fy_place_oco_gtt_order\n");
 
     cJSON *root = cJSON_CreateObject();
 
@@ -658,6 +673,7 @@ void fy_place_oco_gtt_order(fyers_session_t* session) {
     char *params = cJSON_PrintUnformatted(root);
 
     fyers_response_t* response = fyers_model_place_gtt_order(model,params);
+    if (response) printf("fy_place_oco_gtt_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -686,7 +702,7 @@ void fy_modify_gtt_order(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_modify_gtt_order \n");
+    printf("Getting fy_modify_gtt_order\n");
 
     cJSON *root = cJSON_CreateObject();
 
@@ -715,6 +731,7 @@ void fy_modify_gtt_order(fyers_session_t* session) {
     char *params = cJSON_PrintUnformatted(root);
 
     fyers_response_t* response = fyers_model_modify_gtt_order(model,params);
+    if (response) printf("fy_modify_gtt_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -743,7 +760,7 @@ void fy_cancel_gtt_order(fyers_session_t* session) {
         return;
     }
 
-    printf("Delete fy_cancel_gtt_order \n");
+    printf("Delete fy_cancel_gtt_order\n");
 
     cJSON *root = cJSON_CreateObject();
 
@@ -751,6 +768,7 @@ void fy_cancel_gtt_order(fyers_session_t* session) {
     char *params = cJSON_PrintUnformatted(root);
 
     fyers_response_t* response = fyers_model_cancel_gtt_order(model,params);
+    if (response) printf("fy_cancel_gtt_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -780,9 +798,10 @@ void fy_get_gtt_orderbook(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_gtt_orderbook");
+    printf("Getting fy_get_gtt_orderbook\n");
 
     fyers_response_t* response = fyers_model_get_gtt_orderbook(model);
+    if (response) printf("fy_get_gtt_orderbook response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -825,6 +844,7 @@ void fy_modify_order(fyers_session_t* session) {
     printf("Getting fy_modify_order\n");
 
     fyers_response_t* response = fyers_model_modify_order(model,params);
+    if (response) printf("fy_modify_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
     
@@ -878,6 +898,7 @@ void fy_modify_mutli_order(fyers_session_t* session) {
     printf("Getting fy_modify_mutli_order\n");
 
     fyers_response_t* response = fyers_model_modify_order(model,params);
+    if (response) printf("fy_modify_mutli_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -913,6 +934,7 @@ void fy_cancel_order(fyers_session_t* session) {
     printf("Getting fy_cancel_order\n");
 
     fyers_response_t* response = fyers_model_cancel_order(model,params);
+    if (response) printf("fy_cancel_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -958,6 +980,7 @@ void fy_cancel_mutli_order(fyers_session_t* session) {
     printf("Getting fy_cancel_mutli_order\n");
 
     fyers_response_t* response = fyers_model_cancel_order(model,params);
+    if (response) printf("fy_cancel_mutli_order response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -993,6 +1016,7 @@ void fy_exit_all_positions(fyers_session_t* session) {
     printf("Getting fy_exit_all_positions\n");
 
     fyers_response_t* response = fyers_model_exit_positions(model,params);
+    if (response) printf("fy_exit_all_positions response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -1031,6 +1055,7 @@ void fy_exit_position_by_segment(fyers_session_t* session) {
     printf("Getting fy_exit_position_by_segment\n");
 
     fyers_response_t* response = fyers_model_exit_positions(model,params);
+    if (response) printf("fy_exit_position_by_segment response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -1066,6 +1091,7 @@ void fy_exit_position_by_id(fyers_session_t* session) {
     printf("Getting fy_exit_position_by_id\n");
 
     fyers_response_t* response = fyers_model_exit_positions(model,params);
+    if (response) printf("fy_exit_position_by_id response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -1101,6 +1127,7 @@ void fy_pending_order_cancel(fyers_session_t* session) {
     printf("Getting fy_pending_order_cancel\n");
 
     fyers_response_t* response = fyers_model_exit_positions(model,params);
+    if (response) printf("fy_pending_order_cancel response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
@@ -1142,6 +1169,7 @@ void fy_convert_position(fyers_session_t* session) {
     printf("Getting fy_pending_order_cancel\n");
 
     fyers_response_t* response = fyers_model_exit_positions(model,params);
+    if (response) printf("fy_convert_position response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1173,6 +1201,7 @@ void fy_get_broker_config(fyers_session_t* session) {
     printf("Getting fy_get_broker_config\n");
 
     fyers_response_t* response = fyers_model_get_market_status(model);
+    if (response) printf("fy_get_broker_config response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1201,7 +1230,7 @@ void fy_get_history(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_history");
+    printf("Getting fy_get_history\n");
 
     cJSON* json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, "symbol", "NSE:SBIN-EQ");
@@ -1213,6 +1242,7 @@ void fy_get_history(fyers_session_t* session) {
     const char* params = cJSON_Print(json);
 
     fyers_response_t* response = fyers_model_get_history(model, params);
+    if (response) printf("fy_get_history response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1241,8 +1271,9 @@ void fy_get_depth(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_depth");
+    printf("Getting fy_get_depth\n");
     fyers_response_t* response = fyers_model_get_depth(model, "NSE:SBIN-EQ", 1);
+    if (response) printf("fy_get_depth response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1271,7 +1302,7 @@ void fy_get_option_chain(fyers_session_t* session) {
         return;
     }
 
-    printf("Getting fy_get_option_chain");
+    printf("Getting fy_get_option_chain\n");
     cJSON* json = cJSON_CreateObject();
     cJSON_AddStringToObject(json, "symbol", "NSE:SBIN-EQ");
     cJSON_AddNumberToObject(json, "strikecount", 7);
@@ -1279,6 +1310,7 @@ void fy_get_option_chain(fyers_session_t* session) {
 
 
     fyers_response_t* response = fyers_model_get_option_chain(model, params);
+    if (response) printf("fy_get_option_chain response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1320,7 +1352,7 @@ void fy_create_alert(fyers_session_t* session) {
     const char* params = cJSON_Print(json);
 
     fyers_response_t* response = fyers_model_create_alert(model, params);
-    printf("%s\n", response->data);
+    if (response) printf("fy_create_alert response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1355,7 +1387,7 @@ void fy_get_alert(fyers_session_t* session) {
     const char* params = cJSON_Print(json);
 
     fyers_response_t* response = fyers_model_get_alert(model, params);
-    printf("%s\n", response->data);
+    if (response) printf("fy_get_alert response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1398,7 +1430,7 @@ void fy_update_alert(fyers_session_t* session) {
     const char* params = cJSON_Print(json);
 
     fyers_response_t* response = fyers_model_update_alert(model, params);
-    printf("%s\n", response->data);
+    if (response) printf("fy_update_alert response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1433,7 +1465,7 @@ void fy_delete_alert(fyers_session_t* session) {
     cJSON_AddStringToObject(json, "agent", "fyers-api");
     const char* params = cJSON_Print(json);
     fyers_response_t* response = fyers_model_delete_alert(model, params);
-    printf("%s\n", response->data);
+    if (response) printf("fy_delete_alert response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 }
@@ -1466,7 +1498,7 @@ void fy_toggle_alert(fyers_session_t* session) {
     const char* params = cJSON_Print(json);
 
     fyers_response_t* response = fyers_model_toggle_alert(model, params);
-    printf("%s\n", response->data);
+    if (response) printf("fy_toggle_alert response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 

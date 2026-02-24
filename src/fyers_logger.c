@@ -4,7 +4,7 @@
  */
 
 #include "fyers_logger.h"
-#include "fyers_config.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
