@@ -1,0 +1,38 @@
+src/fyers_logger.c
+  98ebb4a6a9cad63a 7
+examples/sample_code.c
+  627a8f3898ae6bd1 60,92,120,122,151,153,182,184,213,215,245,247,277,279,308,310,340,342,371,373,423,491,563,617,646,676,705,734,763,771,801,804,847,901,937,983,1019,1058,1094,1130,1172,1204,1233,1245,1274,1276,1305,1313,1355,1390,1433,1468,1501
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.37",
+  "base_commit_sha": "c5610d30e6117086b24d46504f84268b3c086971",
+  "prompts": {
+    "627a8f3898ae6bd1": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "724e60c6-7917-4b9c-9efa-a727dab70d3c",
+        "model": "default"
+      },
+      "human_author": "kishore-fyers <kishorekumar@fyers.in>",
+      "messages": [],
+      "total_additions": 65,
+      "total_deletions": 33,
+      "accepted_lines": 53,
+      "overriden_lines": 0
+    },
+    "98ebb4a6a9cad63a": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "7990cdec-b3f2-4d2b-9fc8-5827151c0fc3",
+        "model": "default"
+      },
+      "human_author": "kishore-fyers <kishorekumar@fyers.in>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
