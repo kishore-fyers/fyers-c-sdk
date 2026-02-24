@@ -1,0 +1,27 @@
+include/fyers_session.h
+  4aa40ed0d56855dd 65-73,75
+examples/sample_code.c
+  4aa40ed0d56855dd 26-27,31,34-35,37,40
+src/fyers_session.c
+  4aa40ed0d56855dd 252,254,276,299,301-304,307-308,310-311,313-314,316-320,322-326,329-333,335,337-345,348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.37",
+  "base_commit_sha": "44acdb14d9494d503850d64c1478dd1c4d21e620",
+  "prompts": {
+    "4aa40ed0d56855dd": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "f2775dc6-e1be-47b6-8cd6-d2da8e85b40d",
+        "model": "default"
+      },
+      "human_author": "kishore-fyers <kishorekumar@fyers.in>",
+      "messages": [],
+      "total_additions": 213,
+      "total_deletions": 169,
+      "accepted_lines": 88,
+      "overriden_lines": 6
+    }
+  }
+}
