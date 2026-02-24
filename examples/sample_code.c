@@ -23,11 +23,27 @@ void fy_generate_authcode(fyers_session_t* session) {
 void fy_generate_token(fyers_session_t* session, const char* auth_code) {
     fyers_session_set_authcode(session, auth_code);
 
-    if (generate_token(session) != FYERS_OK) {
+    fyers_response_t* response = generate_token(session);
+    if (!response) {
         fprintf(stderr, "Failed to generate token\n");
         fyers_session_destroy(session);
         fyers_cleanup();
+        return;
     }
+    printf("response: %s\n", response->data);
+    fyers_response_destroy(response);
+}
+
+void fy_generate_token_with_refresh_token(fyers_session_t* session, const char* refresh_token, const char* pin) {
+    fyers_response_t* response = generate_token_with_refresh_token(session, refresh_token, pin);
+    if (!response) {
+        fprintf(stderr, "Failed to generate token (API call error)\n");
+        fyers_session_destroy(session);
+        fyers_cleanup();
+        return;
+    }
+    printf("response: %s\n", response->data);
+    fyers_response_destroy(response);
 }
 
 void fy_get_profile(fyers_session_t* session) {
@@ -1531,6 +1547,7 @@ int main() {
     // Authentication
     // fy_generate_authcode(session); // generate auth code
     // fy_generate_token(session, auth_code); // generate token
+    // fy_generate_token_with_refresh_token(session, refresh_token, pin); // generate token with refresh token
 
     // User
     // fy_get_profile(session); // get profile

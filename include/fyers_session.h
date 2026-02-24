@@ -62,10 +62,17 @@ fyers_error_t fyers_session_set_access_token(fyers_session_t* session,
 /**
  * @brief Generate access token from auth code
  * @param session Session instance
- * @return FYERS_OK on success
- * 
+ * @return API response
  */
-fyers_error_t generate_token(fyers_session_t* session);
+fyers_response_t* generate_token(fyers_session_t* session);
+/**
+ * @brief Generate access token from refresh token
+ * @param session Session instance
+ * @param refresh_token Refresh token
+ * @param pin User PIN
+ * @return API response (caller must call fyers_response_destroy), or NULL on error (invalid params or failed to call API)
+ */
+fyers_response_t* generate_token_with_refresh_token(fyers_session_t* session, const char* refresh_token, const char* pin);
 
 /**
  * @brief Get client ID from session

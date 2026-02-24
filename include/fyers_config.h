@@ -29,6 +29,7 @@ extern "C" {
 #define FYERS_ENDPOINT_MARKET_STATUS "/marketStatus"
 #define FYERS_ENDPOINT_AUTH "/generate-authcode"
 #define FYERS_ENDPOINT_VALIDATE_AUTHCODE "/validate-authcode"
+#define FYERS_ENDPOINT_VALIDATE_REFRESH_TOKEN "/validate-refresh-token"
 #define FYERS_ENDPOINT_DATA_TOKEN "/data-token"
 #define FYERS_ENDPOINT_HISTORY "/history"
 #define FYERS_ENDPOINT_QUOTES "/quotes"
