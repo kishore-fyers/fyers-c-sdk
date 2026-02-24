@@ -1520,6 +1520,248 @@ void fy_toggle_alert(fyers_session_t* session) {
 
 }
 
+// --- CreateSmartOrderLimit ---
+// CreateSmartOrderLimitRequest: Symbol, Side, Qty, ProductType, LimitPrice, OrderType, EndTime, OnExp, (optional StopPrice, Hpr, Lpr, Mpp)
+void example_create_smart_order_limit(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "symbol", "NSE:IDEA-EQ");
+    cJSON_AddNumberToObject(req, "side", 1);
+    cJSON_AddNumberToObject(req, "qty", 1);
+    cJSON_AddStringToObject(req, "productType", "CNC");
+    cJSON_AddNumberToObject(req, "limitPrice", 10.15);
+    cJSON_AddNumberToObject(req, "orderType", 1);
+    cJSON_AddNumberToObject(req, "endTime", 1771577294);
+    cJSON_AddNumberToObject(req, "onExp", 2);
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_create_smart_order_limit(model, req_str);
+    print_response("createSmartOrderLimit", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- CreateSmartOrderStep ---
+void example_create_smart_order_step(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "symbol", "NSE:TCS-EQ");
+    cJSON_AddNumberToObject(req, "side", 1);
+    cJSON_AddNumberToObject(req, "qty", 10);
+    cJSON_AddStringToObject(req, "productType", "CNC");
+    cJSON_AddNumberToObject(req, "initQty", 2);
+    cJSON_AddNumberToObject(req, "avgqty", 2);
+    cJSON_AddNumberToObject(req, "avgdiff", 5);
+    cJSON_AddNumberToObject(req, "direction", 1);
+    cJSON_AddNumberToObject(req, "limitPrice", 750);
+    cJSON_AddNumberToObject(req, "orderType", 1);
+    cJSON_AddNumberToObject(req, "startTime", 1771566494);
+    cJSON_AddNumberToObject(req, "endTime", 1771577294);
+    cJSON_AddNumberToObject(req, "hpr", 800);
+    cJSON_AddNumberToObject(req, "lpr", 700);
+    cJSON_AddNumberToObject(req, "mpp", 1);
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_create_smart_order_step(model, req_str);
+    print_response("createSmartOrderStep", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- CreateSmartOrderSIP ---
+// Required: symbol, productType ("CNC"|"MTF"), freq (1=Daily,2=Weekly,3=Monthly,6=Quarterly), sip_day (1-28), qty OR amount.
+// Conditional: sip_time (required if freq=1; Unix time within market hours).
+// Optional: imd_start, endTime, hpr, lpr, step_up_freq (3|5), step_up_qty, step_up_amount, exp_qty.
+void example_create_smart_order_sip(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "symbol", "NSE:SBIN-EQ");
+    cJSON_AddNumberToObject(req, "side", 1);
+    cJSON_AddStringToObject(req, "productType", "CNC");
+    cJSON_AddNumberToObject(req, "freq", 3);           /* 1=Daily, 2=Weekly, 3=Monthly, 6=Quarterly */
+    cJSON_AddNumberToObject(req, "sip_day", 15);       /* 1-28 */
+    cJSON_AddNumberToObject(req, "amount", 5000);     /* qty OR amount required; max 999999 */
+    /* sip_time: required when freq=1 (Daily); Unix timestamp within market hours. Omit for freq 2/3/6. */
+    /* cJSON_AddNumberToObject(req, "sip_time", 1730000400); */
+    cJSON_AddBoolToObject(req, "imd_start", false);
+    cJSON_AddNumberToObject(req, "endTime", 0);       /* 0 = no end date; or Unix timestamp */
+    cJSON_AddNumberToObject(req, "hpr", 900);         /* skip if price above */
+    cJSON_AddNumberToObject(req, "lpr", 600);         /* skip if price below */
+    cJSON_AddNumberToObject(req, "step_up_freq", 3);  /* 3 or 5; 0 = no step-up */
+    cJSON_AddNumberToObject(req, "step_up_amount", 500);
+    /* step_up_qty, exp_qty optional */
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_create_smart_order_sip(model, req_str);
+    print_response("createSmartOrderSIP", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- CreateSmartOrderTrail --- API: symbol, side, qty, productType, stopPrice, jump_diff, orderType, mpp
+void example_create_smart_order_trail(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "symbol", "NSE:SBIN-EQ");
+    cJSON_AddNumberToObject(req, "side", -1);
+    cJSON_AddNumberToObject(req, "qty", 1);
+    cJSON_AddStringToObject(req, "productType", "CNC");
+    cJSON_AddNumberToObject(req, "stopPrice", 740);
+    cJSON_AddNumberToObject(req, "jump_diff", 5);
+    cJSON_AddNumberToObject(req, "orderType", 2);
+    cJSON_AddNumberToObject(req, "mpp", 1);
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_create_smart_order_trail(model, req_str);
+    print_response("createSmartOrderTrail", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- ModifySmartOrder --- (use flowId of an active smart order; send only fields that apply to flow type)
+void example_modify_smart_order(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "flowId", "fcc404d8-f15f-426b-849a-cd85e0454a34");
+    cJSON_AddNumberToObject(req, "amount", 4000);
+    cJSON_AddStringToObject(req, "productType", "CNC");
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_modify_smart_order(model, req_str);
+    print_response("modifySmartOrder", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- CancelSmartOrder ---
+void example_cancel_smart_order(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "flowId", "fcc404d8-f15f-426b-849a-cd85e0454a34");
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_cancel_smart_order(model, req_str);
+    print_response("cancelSmartOrder", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- PauseSmartOrder ---
+void example_pause_smart_order(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "flowId", "fcc404d8-f15f-426b-849a-cd85e0454a34");
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_pause_smart_order(model, req_str);
+    print_response("pauseSmartOrder", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- ResumeSmartOrder ---
+void example_resume_smart_order(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "flowId", "fcc404d8-f15f-426b-849a-cd85e0454a34");
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_resume_smart_order(model, req_str);
+    print_response("resumeSmartOrder", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- GetSmartOrderBookWithFilter --- (pass NULL for no filter, or query string e.g. "exchange=NSE&page_no=1&page_size=20")
+void example_get_smart_order_book(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    fyers_response_t* response = fyers_model_get_smart_order_book(model, NULL);
+    print_response("getSmartOrderBookWithFilter", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+// --- CreateSmartExitTrigger --- (type: 1=Only Alert, 2=Exit with Alert, 3=Exit+Wait for Recovery; waitTime required for type 3)
+void example_create_smart_exit_trigger(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "name", "Auto Exit Strategy");
+    cJSON_AddNumberToObject(req, "type", 2);
+    cJSON_AddNumberToObject(req, "profitRate", 615.01);
+    cJSON_AddNumberToObject(req, "lossRate", 0);
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_create_smart_exit_trigger(model, req_str);
+    print_response("createSmartExitTrigger", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- GetSmartExitTrigger --- (pass NULL for all, or flow_id for one)
+void example_get_smart_exit_trigger(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    fyers_response_t* response = fyers_model_get_smart_exit_trigger(model, NULL);
+    print_response("getSmartExitTrigger", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+// --- UpdateSmartExitTrigger ---
+void example_update_smart_exit_trigger(fyers_session_t* session) {
+   
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "flowId", "9bb5eb72-8991-47e0-befb-7dacafba8668");
+    cJSON_AddNumberToObject(req, "profitRate", 615.3);
+    cJSON_AddNumberToObject(req, "lossRate", 614.90);
+    cJSON_AddNumberToObject(req, "type", 3);
+    cJSON_AddStringToObject(req, "name", "re-test");
+    cJSON_AddNumberToObject(req, "waitTime", 5);
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_update_smart_exit_trigger(model, req_str);
+    print_response("updateSmartExitTrigger", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+}
+
+// --- ActivateDeactivateSmartExitTrigger ---
+void example_activate_deactivate_smart_exit_trigger(fyers_session_t* session) {
+   
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "flowId", "9bb5eb72-8991-47e0-befb-7dacafba8668");
+    char* req_str = cJSON_PrintUnformatted(req);
+    fyers_response_t* response = fyers_model_activate_deactivate_smart_exit_trigger(model, req_str);
+    print_response("activateDeactivateSmartExitTrigger", response);
+    if (response) fyers_response_destroy(response);
+    fyers_model_destroy(model);
+    cJSON_free(req_str);
+    cJSON_Delete(req);
+} 
 int main() {
     // Replace with your app credentials
     // const char* client_id = "M0R4WW1PYU-100";
@@ -1601,6 +1843,21 @@ int main() {
     // fy_update_alert(session); // update alert
     // fy_delete_alert(session); // delete alert
     // fy_toggle_alert(session); // toggle alert
+
+
+    // example_create_smart_order_limit(session);
+    // example_create_smart_order_step(session);
+    //  example_create_smart_order_sip(session);
+    // example_create_smart_order_trail(session);
+    // example_modify_smart_order(session);
+    // example_cancel_smart_order(session);
+    //  example_pause_smart_order(session);
+    // example_resume_smart_order(session);
+    // example_get_smart_order_book(session);
+    // example_create_smart_exit_trigger(session);
+   // example_get_smart_exit_trigger(session);
+   // example_update_smart_exit_trigger(session);   /* active example, same as Go snippet */
+   // example_activate_deactivate_smart_exit_trigger(session);
 
     fyers_session_destroy(session);
     fyers_cleanup();

@@ -38,7 +38,19 @@ extern "C" {
 #define FYERS_ENDPOINT_LOGOUT "/logout"
 #define FYERS_ENDPOINT_PRICE_ALERT "/price-alert"
 #define FYERS_ENDPOINT_TOGGLE_ALERT "/toggle-alert"
-#define FYERS_ENDPOINT_TRIGGERED_ALERTS "/triggered-alerts"
+
+// Smart order endpoints
+#define FYERS_ENDPOINT_CREATE_SMARTORDER_STEP "/smart-order/step"
+#define FYERS_ENDPOINT_CREATE_SMARTORDER_LIMIT "/smart-order/limit"
+#define FYERS_ENDPOINT_CREATE_SMARTORDER_TRAIL "/smart-order/trail"
+#define FYERS_ENDPOINT_CREATE_SMARTORDER_SIP "/smart-order/sip"
+#define FYERS_ENDPOINT_MODIFY_SMARTORDER "/smart-order/modify"
+#define FYERS_ENDPOINT_CANCEL_SMARTORDER "/smart-order/cancel"
+#define FYERS_ENDPOINT_PAUSE_SMARTORDER "/smart-order/pause"
+#define FYERS_ENDPOINT_RESUME_SMARTORDER "/smart-order/resume"
+#define FYERS_ENDPOINT_SMARTORDER_ORDERBOOK "/smart-order/orderbook"
+#define FYERS_ENDPOINT_SMART_EXIT_TRIGGER "/flows/tc/se"
+#define FYERS_ENDPOINT_ACTIVATE_SMART_EXIT_TRIGGER "/flows/tc/se/activate"
 
 // SDK version
 #define FYERS_SDK_VERSION "3.1.8"
