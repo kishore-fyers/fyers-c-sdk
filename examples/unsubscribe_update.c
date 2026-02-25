@@ -61,7 +61,7 @@ void on_connect(fyers_data_ws_t* ws) {
         "NSE:ADANIENT-EQ"
     };
     
-    fyers_data_ws_subscribe(ws, symbols, 2, FYERS_DATA_TYPE_SYMBOL_UPDATE, 11);
+    fyers_data_ws_subscribe(ws, symbols, FYERS_DATA_TYPE_SYMBOL_UPDATE, 11);
 }
 
 void on_close(fyers_data_ws_t* ws, const char* reason) {

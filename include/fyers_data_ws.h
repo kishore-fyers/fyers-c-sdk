@@ -86,7 +86,6 @@ void fyers_data_ws_close(fyers_data_ws_t* ws);
 fyers_error_t fyers_data_ws_subscribe(
     fyers_data_ws_t* ws,
     const char** symbols,
-    size_t symbol_count,
     fyers_data_type_t data_type,
     int channel
 );

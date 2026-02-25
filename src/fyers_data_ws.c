@@ -840,18 +840,11 @@ static void response_output(fyers_data_ws_t* ws, cJSON* data_resp, const char* d
     size_t precision_fields_count = sizeof(precision_fields) / sizeof(precision_fields[0]);
     
     if (ws->litemode && !cJSON_GetObjectItem(data_resp, "bidPrice1")) {
-        // Lite mode processing
-        for (int i = 0; i < 3; i++) {
-            const char* field = ws->lite_val[i];
-            cJSON* item = cJSON_GetObjectItem(data_resp, field);
-            if (item) {
-                if (strcmp(field, "ltp") == 0 && cJSON_IsNumber(item) && precision_mult > 0) {
-                    double val = cJSON_GetNumberValue(item) / precision_mult;
-                    cJSON_AddNumberToObject(response, field, val);
-                } else {
-                    cJSON_AddItemToObject(response, field, cJSON_Duplicate(item, 1));
-                }
-            }
+        // Lite mode: only ltp from data_resp; type and symbol (complete) are added below from hsm_token and symbol_token_map
+        cJSON* ltp_item = cJSON_GetObjectItem(data_resp, "ltp");
+        if (ltp_item && cJSON_IsNumber(ltp_item) && precision_mult > 0) {
+            double val = cJSON_GetNumberValue(ltp_item) / precision_mult;
+            cJSON_AddNumberToObject(response, "ltp", val);
         }
         
         // Calculate change and change percent
@@ -885,6 +878,10 @@ static void response_output(fyers_data_ws_t* ws, cJSON* data_resp, const char* d
                 cJSON* item = cJSON_GetObjectItem(data_resp, field);
                 if (!item) continue;
                 
+                // Skip symbol and type from data_resp; canonical values (complete symbol, type prefix) are added below
+                if (strcmp(field, "symbol") == 0 || strcmp(field, "type") == 0) {
+                    continue;
+                }
                 // Exclude lower_ckt and upper_ckt from precision calculation (matching Python line 956)
                 if (strcmp(field, "lower_ckt") == 0 || strcmp(field, "upper_ckt") == 0) {
                     continue; // Skip - will be set to 0 later
@@ -1939,10 +1936,10 @@ void fyers_data_ws_close(fyers_data_ws_t* ws) {
 fyers_error_t fyers_data_ws_subscribe(
     fyers_data_ws_t* ws,
                                            const char** symbols,
-                                           size_t symbol_count,
     fyers_data_type_t data_type,
     int channel) {
-    
+        
+    size_t symbol_count = sizeof(symbols) / sizeof(symbols[0]);
     if (!ws || !symbols || symbol_count == 0) {
         return FYERS_ERROR_INVALID_PARAM;
     }
