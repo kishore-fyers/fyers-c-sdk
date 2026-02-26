@@ -22,7 +22,7 @@ extern "C" {
  * Note: Uses default values for response_type ("code"), state ("sample_state"), 
  *       and grant_type ("authorization_code")
  */
-fyers_session_t* fyers_session_create(const char* client_id,
+FYERS_API fyers_session_t* fyers_session_create(const char* client_id,
                                        const char* redirect_uri,
                                        const char* secret_key);
 
@@ -30,7 +30,7 @@ fyers_session_t* fyers_session_create(const char* client_id,
  * @brief Destroy session instance
  * @param session Session instance
  */
-void fyers_session_destroy(fyers_session_t* session);
+FYERS_API void fyers_session_destroy(fyers_session_t* session);
 
 /**
  * @brief Generate authentication URL
@@ -39,7 +39,7 @@ void fyers_session_destroy(fyers_session_t* session);
  * @param buffer_size Size of the buffer
  * @return FYERS_OK on success
  */
-fyers_error_t generate_authcode(fyers_session_t* session);
+FYERS_API fyers_error_t generate_authcode(fyers_session_t* session);
 
 /**
  * @brief Set auth code received from OAuth callback
@@ -47,7 +47,7 @@ fyers_error_t generate_authcode(fyers_session_t* session);
  * @param auth_code Auth code from OAuth callback
  * @return FYERS_OK on success
  */
-fyers_error_t fyers_session_set_authcode(fyers_session_t* session,
+FYERS_API fyers_error_t fyers_session_set_authcode(fyers_session_t* session,
                                           const char* auth_code);
 
 /**
@@ -56,7 +56,7 @@ fyers_error_t fyers_session_set_authcode(fyers_session_t* session,
  * @param access_token Access token string
  * @return FYERS_OK on success
  */
-fyers_error_t fyers_session_set_access_token(fyers_session_t* session,
+FYERS_API fyers_error_t fyers_session_set_access_token(fyers_session_t* session,
                                              const char* access_token);
 
 /**
@@ -64,7 +64,7 @@ fyers_error_t fyers_session_set_access_token(fyers_session_t* session,
  * @param session Session instance
  * @return API response
  */
-fyers_response_t* generate_token(fyers_session_t* session);
+FYERS_API fyers_response_t* generate_token(fyers_session_t* session);
 /**
  * @brief Generate access token from refresh token
  * @param session Session instance
@@ -72,21 +72,21 @@ fyers_response_t* generate_token(fyers_session_t* session);
  * @param pin User PIN
  * @return API response (caller must call fyers_response_destroy), or NULL on error (invalid params or failed to call API)
  */
-fyers_response_t* generate_token_with_refresh_token(fyers_session_t* session, const char* refresh_token, const char* pin);
+FYERS_API fyers_response_t* generate_token_with_refresh_token(fyers_session_t* session, const char* refresh_token, const char* pin);
 
 /**
  * @brief Get client ID from session
  * @param session Session instance
  * @return Client ID string or NULL
  */
-const char* fyers_session_get_client_id(fyers_session_t* session);
+FYERS_API const char* fyers_session_get_client_id(fyers_session_t* session);
 
 /**
  * @brief Get access token from session
  * @param session Session instance
  * @return Access token string or NULL if not generated yet
  */
-const char* fyers_session_get_access_token(fyers_session_t* session);
+FYERS_API const char* fyers_session_get_access_token(fyers_session_t* session);
 
 #ifdef __cplusplus
 }

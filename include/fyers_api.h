@@ -7,6 +7,8 @@
 #ifndef FYERS_API_H
 #define FYERS_API_H
 
+#include "fyers_export.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -85,15 +87,15 @@ typedef struct {
 } fyers_response_t;
 
 // Initialize and cleanup
-fyers_error_t fyers_init(void);
-void fyers_cleanup(void);
-void fyers_ensure_init(void);  // Auto-initialization (called internally)
+FYERS_API fyers_error_t fyers_init(void);
+FYERS_API void fyers_cleanup(void);
+FYERS_API void fyers_ensure_init(void);  /* Auto-initialization (called internally) */
 
 // Set global log callback
-void fyers_set_log_callback(fyers_log_callback_t callback);
+FYERS_API void fyers_set_log_callback(fyers_log_callback_t callback);
 
 // Set log level
-void fyers_set_log_level(fyers_log_level_t level);
+FYERS_API void fyers_set_log_level(fyers_log_level_t level);
 
 // WebSocket APIs (forward declarations)
 // Include full headers for complete API

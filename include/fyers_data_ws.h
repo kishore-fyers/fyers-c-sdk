@@ -42,7 +42,7 @@ typedef void (*fyers_data_ws_on_close_t)(fyers_data_ws_t* ws, const char* reason
  * @param reconnect_retry Maximum number of reconnection attempts
  * @return WebSocket instance or NULL on error
  */
-fyers_data_ws_t* fyers_data_ws_create(
+FYERS_API fyers_data_ws_t* fyers_data_ws_create(
     const char* access_token,
     bool write_to_file,
     const char* log_path,
@@ -59,20 +59,20 @@ fyers_data_ws_t* fyers_data_ws_create(
  * @brief Destroy WebSocket instance
  * @param ws WebSocket instance
  */
-void fyers_data_ws_destroy(fyers_data_ws_t* ws);
+FYERS_API void fyers_data_ws_destroy(fyers_data_ws_t* ws);
 
 /**
  * @brief Connect to the WebSocket server
  * @param ws WebSocket instance
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_data_ws_connect(fyers_data_ws_t* ws);
+FYERS_API fyers_error_t fyers_data_ws_connect(fyers_data_ws_t* ws);
 
 /**
  * @brief Close the WebSocket connection
  * @param ws WebSocket instance
  */
-void fyers_data_ws_close(fyers_data_ws_t* ws);
+FYERS_API void fyers_data_ws_close(fyers_data_ws_t* ws);
 
 /**
  * @brief Subscribe to symbols for real-time updates
@@ -83,7 +83,7 @@ void fyers_data_ws_close(fyers_data_ws_t* ws);
  * @param channel Channel number (default: 11)
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_data_ws_subscribe(
+FYERS_API fyers_error_t fyers_data_ws_subscribe(
     fyers_data_ws_t* ws,
     const char** symbols,
     size_t symbol_count,
@@ -100,7 +100,7 @@ fyers_error_t fyers_data_ws_subscribe(
  * @param channel Channel number
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_data_ws_unsubscribe(
+FYERS_API fyers_error_t fyers_data_ws_unsubscribe(
     fyers_data_ws_t* ws,
     const char** symbols,
     size_t symbol_count,
@@ -114,20 +114,20 @@ fyers_error_t fyers_data_ws_unsubscribe(
  * @param channel Channel number to resume
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_data_ws_channel_resume(fyers_data_ws_t* ws, int channel);
+FYERS_API fyers_error_t fyers_data_ws_channel_resume(fyers_data_ws_t* ws, int channel);
 
 /**
  * @brief Check if WebSocket is connected
  * @param ws WebSocket instance
  * @return true if connected, false otherwise
  */
-bool fyers_data_ws_is_connected(fyers_data_ws_t* ws);
+FYERS_API bool fyers_data_ws_is_connected(fyers_data_ws_t* ws);
 
 /**
  * @brief Keep the WebSocket running (blocks until closed)
  * @param ws WebSocket instance
  */
-void fyers_data_ws_keep_running(fyers_data_ws_t* ws);
+FYERS_API void fyers_data_ws_keep_running(fyers_data_ws_t* ws);
 
 #ifdef __cplusplus
 }

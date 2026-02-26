@@ -1397,12 +1397,7 @@ void fy_get_alert(fyers_session_t* session) {
     }
 
     printf("Getting fy_get_alert\n");
-    cJSON* json = cJSON_CreateObject();
-    cJSON_AddStringToObject(json, "agent", "fyers-api");
-    cJSON_AddNumberToObject(json, "archive", 1);
-    const char* params = cJSON_Print(json);
-
-    fyers_response_t* response = fyers_model_get_alert(model, params);
+    fyers_response_t* response = fyers_model_get_alert(model);
     if (response) printf("fy_get_alert response: %s\n", response->data ? response->data : "(null)");
     fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -1518,6 +1513,20 @@ void fy_toggle_alert(fyers_session_t* session) {
     fyers_response_destroy(response);
     fyers_model_destroy(model);
 
+}
+
+static fyers_model_t* create_model_from_session(fyers_session_t* session) {
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    if (!client_id || !access_token) return NULL;
+    return fyers_model_create(client_id, access_token, false, NULL, FYERS_LOG_INFO);
+}
+
+static void print_response(const char* name, fyers_response_t* response) {
+    if (response)
+        printf("%s response: %s\n", name, response->data ? response->data : "(null)");
+    else
+        printf("%s: (null response)\n", name);
 }
 
 // --- CreateSmartOrderLimit ---
@@ -1692,7 +1701,7 @@ void example_resume_smart_order(fyers_session_t* session) {
 void example_get_smart_order_book(fyers_session_t* session) {
     fyers_model_t* model = create_model_from_session(session);
     if (!model) return;
-    fyers_response_t* response = fyers_model_get_smart_order_book(model, NULL);
+    fyers_response_t* response = fyers_model_get_smart_order_book(model);
     print_response("getSmartOrderBookWithFilter", response);
     if (response) fyers_response_destroy(response);
     fyers_model_destroy(model);
@@ -1720,7 +1729,7 @@ void example_create_smart_exit_trigger(fyers_session_t* session) {
 void example_get_smart_exit_trigger(fyers_session_t* session) {
     fyers_model_t* model = create_model_from_session(session);
     if (!model) return;
-    fyers_response_t* response = fyers_model_get_smart_exit_trigger(model, NULL);
+    fyers_response_t* response = fyers_model_get_smart_exit_trigger(model);
     print_response("getSmartExitTrigger", response);
     if (response) fyers_response_destroy(response);
     fyers_model_destroy(model);

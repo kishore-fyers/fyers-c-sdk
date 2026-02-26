@@ -1,127 +1,88 @@
-# Fyers API C SDK
+<a href="https://fyers.in/"><img src="https://assets.fyers.in/images/logo.svg" align="right" /></a>
 
-Official C/C++ SDK for the Fyers Trading API v3. This SDK provides a C-style API that is compatible with both C and C++.
+# Fyers API C SDK : fyers-api-c - v3.1.8
 
-## Features
+The official Fyers C SDK for API-V3 Users [FYERS API](https://fyers.in/products/api/).
 
-- ✅ Full REST API support (trading, market data, user info)
-- ✅ OAuth2 authentication flow with simplified API
-- ✅ Auto-initialization (no manual init required)
-- ✅ Synchronous and asynchronous API calls
-- ✅ Cross-platform (Linux, macOS, Windows)
-- ✅ Thread-safe logging
-- ✅ C++17 compatible
-- ✅ Clean error handling (errors logged only, success responses via printf)
+Fyers API is a set of REST-like APIs that provide integration with our in-house trading platform with which you can build your own customized trading applications.
+
+## Documentation
+
+- [Fyers API documentation](https://myapi.fyers.in/docsv3)
 
 ## Requirements
 
-- CMake 3.15 or higher
-- C compiler (C11 standard)
-- C++ compiler (C++17 standard)
-- libcurl (for HTTP requests)
-- cJSON (for JSON parsing)
-- OpenSSL (for cryptographic operations)
-- libwebsockets (for WebSocket support — data & order streams)
+- CMake 3.15+
+- C compiler (C11)
+- **Dependencies:** libcurl, cJSON, OpenSSL, libwebsockets
 
-## Required packages (install before building)
+| Package | Linux (apt) | macOS (Homebrew) | Windows (vcpkg) |
+|---------|-------------|------------------|-----------------|
+| cmake | `cmake` | `cmake` | CMake installer |
+| curl | `libcurl4-openssl-dev` | `curl` | `curl` |
+| cJSON | `libcjson-dev` | `cjson` | `cjson` |
+| OpenSSL | `libssl-dev` | `openssl` | `openssl` |
+| libwebsockets | `libwebsockets-dev` | `libwebsockets` | `libwebsockets` |
 
-These are the packages you need to install on your system. Install them using the commands below for your platform.
-
-| Package       | Purpose              | Linux (apt)              | macOS (Homebrew)   | Windows (vcpkg)   |
-|---------------|----------------------|---------------------------|--------------------|-------------------|
-| **cmake**     | Build system         | `cmake`                   | `cmake`            | CMake (installer) |
-| **curl**      | HTTP client          | `libcurl4-openssl-dev`    | `curl`             | `curl`            |
-| **cJSON**     | JSON parsing         | `libcjson-dev`            | `cjson`            | `cjson`           |
-| **OpenSSL**   | TLS / crypto         | `libssl-dev`              | `openssl`          | `openssl`         |
-| **libwebsockets** | WebSocket client | `libwebsockets-dev`       | `libwebsockets`    | `libwebsockets`   |
+## Usage
 
 ### Linux (Ubuntu/Debian)
 
+Install dependencies and build:
+
 ```bash
 sudo apt-get update
-sudo apt-get install -y \
-    build-essential \
-    cmake \
-    libcurl4-openssl-dev \
-    libcjson-dev \
-    libssl-dev \
-    libwebsockets-dev
+sudo apt-get install -y build-essential cmake \
+    libcurl4-openssl-dev libcjson-dev libssl-dev libwebsockets-dev
+
+mkdir build && cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+make
+sudo make install
+sudo ldconfig
 ```
 
 ### macOS
 
 ```bash
 brew install cmake curl cjson openssl libwebsockets
-```
 
-### Windows
-
-- Install [Visual Studio](https://visualstudio.microsoft.com/) (2019 or later) with "Desktop development with C++".
-- Install [CMake](https://cmake.org/download/).
-- Install [vcpkg](https://vcpkg.io/), then:
-
-```bash
-vcpkg install curl cjson openssl libwebsockets
-```
-
-Use the vcpkg toolchain when configuring CMake (see "Windows Build" under Building below).
-
-## Installation
-
-### Linux (Ubuntu/Debian)
-
-If you have not installed the required packages yet, run:
-
-```bash
-sudo apt-get update
-sudo apt-get install -y \
-    build-essential \
-    cmake \
-    libcurl4-openssl-dev \
-    libcjson-dev \
-    libssl-dev \
-    libwebsockets-dev
-```
-
-### macOS
-
-If you have not installed the required packages yet, run:
-
-```bash
-brew install cmake curl cjson openssl libwebsockets
-```
-
-### Building and Installing
-
-Build the shared library (`libfyers-api-c.so` on Linux, `libfyers-api-c.dylib` on macOS) and install it system-wide:
-
-```bash
-mkdir build
-cd build
+mkdir build && cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make
 sudo make install
 ```
 
-To install to a custom location (e.g. `$HOME/.local`):
+### Windows
 
-```bash
-cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/.local
-make
-make install
+1. Install [Visual Studio](https://visualstudio.microsoft.com/) (2019+) with "Desktop development with C++"
+2. Install [CMake](https://cmake.org/download/)
+3. Install [vcpkg](https://vcpkg.io/) and run:
+
+```powershell
+vcpkg install curl cjson openssl libwebsockets
 ```
 
-### Using the Installed Library
+4. Build:
 
-After installation, you can use the library in your own projects:
+```powershell
+mkdir build
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE=[path-to-vcpkg]/scripts/buildsystems/vcpkg.cmake
+cmake --build . --config Release
+cmake --install . --prefix C:\fyers-sdk
+```
 
-**With gcc/clang directly:**
+Add the `bin/` directory to your PATH, or copy `fyers-api-c.dll` next to your executable.
+
+### Link in Your Project
+
+**Direct compile (gcc/clang):**
 ```bash
 gcc main.c -lfyers-api-c -o myapp
 ```
-(All dependencies are propagated by the shared library; no need to specify -lcjson, -lcurl, etc.)
 
-**With CMake:**
+**CMake:**
 ```cmake
 find_package(fyers-api-c REQUIRED)
 add_executable(myapp main.c)
@@ -132,337 +93,165 @@ target_link_libraries(myapp PRIVATE fyers-api-c::fyers-api-c)
 ```c
 #include <fyers_api.h>
 #include <fyers_model.h>
+#include <fyers_session.h>
 #include <fyers_data_ws.h>
 #include <fyers_order_ws.h>
 ```
 
-## Quick Start
-
-### 1. Authentication
+### Quick Start
 
 ```c
-#include "fyers_api.h"
-#include "fyers_session.h"
+#include <fyers_api.h>
+#include <fyers_session.h>
+#include <fyers_model.h>
 
-// SDK auto-initializes, but you can call fyers_init() explicitly if needed
-// fyers_init();  // Optional
+int main(void) {
+    fyers_session_t* session = fyers_session_create(
+        "YOUR_CLIENT_ID", "YOUR_REDIRECT_URI", "YOUR_SECRET_KEY"
+    );
+    generate_authcode(session);
+    fyers_session_set_authcode(session, "AUTH_CODE_FROM_REDIRECT");
+    generate_token(session);
 
-// Create session (uses default values for response_type, state, and grant_type)
-fyers_session_t* session = fyers_session_create(
-    "YOUR_CLIENT_ID",
-    "YOUR_REDIRECT_URI",
-    "YOUR_SECRET_KEY"
-);
+    const char* client_id = fyers_session_get_client_id(session);
+    const char* access_token = fyers_session_get_access_token(session);
+    fyers_model_t* model = fyers_model_create(
+        client_id, access_token, false, NULL, FYERS_LOG_INFO
+    );
 
-// Generate auth URL (prints URL directly to stdout)
-generate_authcode(session);
-// User visits the printed URL and authorizes
+    fyers_response_t* response = fyers_model_get_profile(model);
+    if (response && response->error == FYERS_OK)
+        printf("Profile: %.*s\n", (int)response->size, response->data);
+    fyers_response_destroy(response);
 
-// After user authorizes, get auth_code from redirect URI
-// Then set it and generate access token (token is stored internally)
-fyers_session_set_authcode(session, "AUTH_CODE_FROM_REDIRECT");
-generate_token(session);
-
-// Access token is now stored in the session
-// You can retrieve it using:
-const char* access_token = fyers_session_get_access_token(session);
-const char* client_id = fyers_session_get_client_id(session);
-
-// Or manually set an access token if you already have one:
-// fyers_session_set_access_token(session, "YOUR_ACCESS_TOKEN");
-
-// Cleanup
-fyers_session_destroy(session);
-fyers_cleanup();  // Optional: cleans up global resources
+    fyers_model_destroy(model);
+    fyers_session_destroy(session);
+    fyers_cleanup();
+    return 0;
+}
 ```
 
-### 2. Using the API
+Try running the sample code from the [Fyers API documentation](https://myapi.fyers.in/docsv3).
 
-```c
-#include "fyers_api.h"
-#include "fyers_model.h"
-#include "fyers_session.h"
+## APIs Supported by Fyers C SDK
 
-// Option 1: Using session (recommended)
-fyers_session_t* session = fyers_session_create(
-    "YOUR_CLIENT_ID",
-    "YOUR_REDIRECT_URI",
-    "YOUR_SECRET_KEY"
-);
+#### User
 
-// After generating token, get credentials from session
-const char* client_id = fyers_session_get_client_id(session);
-const char* access_token = fyers_session_get_access_token(session);
+* Profile
+* Funds
+* Holdings
 
-// Create model instance
-fyers_model_t* model = fyers_model_create(
-    client_id,
-    access_token,  // Just the access token (not "client_id:token")
-    false,  // is_async
-    NULL,   // log_path
-    FYERS_LOG_INFO
-);
+#### Transaction Info
 
-// Option 2: Direct model creation (if you already have credentials)
-fyers_model_t* model = fyers_model_create(
-    "YOUR_CLIENT_ID",
-    "YOUR_ACCESS_TOKEN",  // Just the access token
-    false,  // is_async
-    NULL,   // log_path
-    FYERS_LOG_INFO
-);
+* Orders
+* Positions
+* Trades
 
-// Get profile
-fyers_response_t* response = fyers_model_get_profile(model);
-if (response && response->error == FYERS_OK) {
-    printf("Profile: %.*s\n", (int)response->size, response->data);
-}
-fyers_response_destroy(response);
+#### Order Placement
 
-// Place order
-const char* order_json = "{"
-    "\"symbol\":\"NSE:SBIN-EQ\","
-    "\"qty\":1,"
-    "\"type\":1,"
-    "\"side\":1,"
-    "\"productType\":\"INTRADAY\","
-    "\"limitPrice\":0,"
-    "\"stopPrice\":0,"
-    "\"validity\":\"DAY\","
-    "\"disclosedQty\":0,"
-    "\"offlineOrder\":false,"
-    "\"stopLoss\":0,"
-    "\"takeProfit\":0"
-"}";
-response = fyers_model_place_order(model, order_json);
-if (response && response->error == FYERS_OK) {
-    printf("Order placed: %.*s\n", (int)response->size, response->data);
-}
-fyers_response_destroy(response);
+* Place Order
+* Place Multi Order
+* Place Basket Orders
+* Place MultiLeg Order
 
-// Cleanup
-fyers_model_destroy(model);
-fyers_cleanup();
-```
+#### GTT Orders
 
-## API Reference
+* GTT Single
+* GTT Modify Order
+* GTT Cancel Order
+* GTT Order Book
 
-### Core API
+#### Smart Orders
 
-- `fyers_init()` - Initialize the SDK (optional - SDK auto-initializes)
-- `fyers_cleanup()` - Cleanup SDK resources (optional)
-- `fyers_set_log_callback()` - Set global log callback
-- `fyers_set_log_level()` - Set log level
+* Smart Limit
+* Smart Trail
+* Smart Step
+* Smart SIP
+* Modify Smart Order
+* Cancel Smart Order
+* Pause Smart Order
+* Resume Smart Order
+* Smart Order Book
 
-### Session Management
+#### Smart Exit
 
-- `fyers_session_create(client_id, redirect_uri, secret_key)` - Create session instance
-- `fyers_session_destroy()` - Destroy session
-- `generate_authcode(session)` - Generate and print OAuth URL
-- `fyers_session_set_authcode(session, auth_code)` - Set auth code from redirect URI
-- `generate_token(session)` - Generate access token (stores internally)
-- `fyers_session_set_access_token(session, token)` - Manually set access token
-- `fyers_session_get_client_id(session)` - Get client ID from session
-- `fyers_session_get_access_token(session)` - Get access token from session
+* Create Smart Exit
+* Fetch Smart Exit
+* Modify / Activate / Deactivate Smart Exit
 
-### Trading APIs
+#### Other Transactions
 
-- `fyers_model_get_profile()` - Get user profile
-- `fyers_model_get_funds()` - Get funds
-- `fyers_model_get_holdings()` - Get holdings
-- `fyers_model_get_positions()` - Get positions
-- `fyers_model_get_orderbook()` - Get orders
-- `fyers_model_get_tradebook()` - Get trades
-- `fyers_model_place_order()` - Place single order
-- `fyers_model_place_basket_orders()` - Place multiple orders
-- `fyers_model_place_multileg_order()` - Place multileg order
-- `fyers_model_modify_order()` - Modify order
-- `fyers_model_cancel_order()` - Cancel order
-- `fyers_model_exit_positions()` - Exit positions
+* Modify Orders
+* Cancel Order
+* Exit Position
+* Convert Position
 
-### Market Data APIs
+#### Broker Config
 
-- `fyers_model_get_quotes()` - Get quotes
-- `fyers_model_get_history()` - Get historical data
-- `fyers_model_get_depth()` - Get market depth
-- `fyers_model_get_option_chain()` - Get option chain
+* Market Status
 
-### Price Alert APIs
-- `fyers_model_create_alert()` - Create Price Alerts
-- `fyers_model_get_alert()`    - Get Price Alerts
-- `fyers_model_update_alert()` - Update Price Alerts
-- `fyers_model_delete_alert()` - Delete Price Alerts
-- `fyers_model_toggle_alert()` - Toggle Price Alerts
+#### Data Api
 
-## Error Handling
+* History
+* Quotes
+* Market Depth
+* Option Chain
 
-All functions return `fyers_error_t` enum values:
-- `FYERS_OK` - Success
-- `FYERS_ERROR` - General error
-- `FYERS_ERROR_INVALID_PARAM` - Invalid parameter
-- `FYERS_ERROR_MEMORY` - Memory allocation error
-- `FYERS_ERROR_NETWORK` - Network error
-- `FYERS_ERROR_AUTH` - Authentication error
-- `FYERS_ERROR_TOKEN_EXPIRED` - Token expired
+#### Price Alert
 
-## Memory Management
+* Create Price Alert
+* Get Price Alerts
+* Modify Price Alert
+* Delete Price Alert
+* Enable/Disable Price Alert
 
-- All `create` functions allocate memory - call corresponding `destroy` functions
-- Response objects (`fyers_response_t`) must be freed with `fyers_response_destroy()`
-- Strings passed to functions are copied internally where needed
+## Web Socket
+
+#### General Socket
+
+* General Socket (orders)
+* General Socket (trades)
+* General Socket (positions)
+* General Socket (general)
+
+#### Market Data
+
+* Market Data Symbol Update
+* Market Data Indices Update
+* Market Data Depth Update
+* Market Data Lite-Mode
+
+## Supported Platforms
+
+| Platform | Library Output |
+|----------|----------------|
+| **macOS** | `libfyers-api-c.dylib` |
+| **Linux** | `libfyers-api-c.so` |
+| **Windows** | `fyers-api-c.dll` + `fyers-api-c.lib` |
 
 ## Examples
 
-See the `examples/` directory for complete examples:
-
-### REST API Examples
-- `sample_code.c` - Comprehensive example demonstrating all REST API operations including:
-  - Authentication (OAuth2 flow)
-  - User APIs (profile, funds, holdings, positions, logout)
-  - Trading APIs (place order, modify order, cancel order, multi-order, multileg order)
-  - GTT Orders (create, modify, cancel, get orderbook)
-  - Position Management (exit positions, convert positions)
-  - Market Data APIs (quotes, history, depth, option chain)
-  - Price Alerts (create, get, update, delete, toggle)
-  - Broker Configuration
-
-### WebSocket Examples
-
-#### Data WebSocket (Market Data)
-- `symbol_update.c` - Real-time symbol/quote updates
-- `depth_update.c` - Market depth (order book) updates
-- `index_update.c` - Index updates
-- `lite_symbol_update.c` - Lite mode symbol updates
-- `unsubscribe_update.c` - Unsubscribe from symbols
-
-#### Order WebSocket (Order Updates)
-- `on_general.c` - General order WebSocket updates
-- `on_orders.c` - Order status updates
-- `on_position.c` - Position updates
-- `on_trade.c` - Trade execution updates
-
-### C++ Examples
-- `cpp_test.cpp` - C++ example demonstrating how to use the C SDK from C++ code
-
-### Building Examples
-
-After building the SDK, examples can be built and run from the `build/examples/` directory:
+Build with examples enabled:
 
 ```bash
-cd build/examples
-./sample_code          # REST API examples
-./symbol_update        # Data WebSocket - symbol updates
-./depth_update         # Data WebSocket - depth updates
-./index_update         # Data WebSocket - index updates
-./on_orders            # Order WebSocket - order updates
-./on_position          # Order WebSocket - position updates
-./on_trade             # Order WebSocket - trade updates
-./cpp_test             # C++ example
-```
-
-## License
-
-MIT License - see LICENSE file
-
-## Support
-
-For API documentation, visit: https://myapi.fyers.in/docsv3
-
-For issues and questions, please open an issue on GitHub.
-
-
-# Building Fyers API C SDK
-
-## Prerequisites
-
-Install the required packages first (see "Required packages" section above). Summary:
-
-### Linux (Ubuntu/Debian)
-```bash
-sudo apt-get update
-sudo apt-get install -y \
-    build-essential \
-    cmake \
-    libcurl4-openssl-dev \
-    libcjson-dev \
-    libssl-dev \
-    libwebsockets-dev
-```
-
-### macOS
-```bash
-brew install cmake curl cjson openssl libwebsockets
-```
-
-### Windows
-- Install Visual Studio 2019 or later with C++ support
-- Install CMake
-- Install vcpkg and install packages:
-  ```bash
-  vcpkg install curl cjson openssl libwebsockets
-  ```
-
-## Building
-
-### Standard Build
-
-```bash
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
+cmake .. -DBUILD_EXAMPLES=ON
 make
-sudo make install  # Linux/macOS
 ```
 
-### Build Options
-
-```bash
-cmake .. \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DBUILD_EXAMPLES=OFF \
-    -DBUILD_TESTS=OFF
-```
-
-### Windows Build
-
-```bash
-mkdir build
-cd build
-cmake .. -DCMAKE_TOOLCHAIN_FILE=[path to vcpkg]/scripts/buildsystems/vcpkg.cmake
-cmake --build . --config Release
-```
-
-## Testing the Build
-
-After building, test with examples:
-
-```bash
-cd build/examples
-# REST API example (comprehensive)
-./sample_code
-
-# Data WebSocket examples
-./symbol_update
-./depth_update
-./index_update
-./lite_symbol_update
-
-# Order WebSocket examples
-./on_orders
-./on_position
-./on_trade
-./on_general
-
-# C++ example
-./cpp_test
-```
+Examples are in `build/examples/` (REST API, WebSocket data, WebSocket orders).
 
 ## Troubleshooting
 
-### Missing Dependencies
+| Issue | Fix |
+|-------|-----|
+| **macOS:** `dyld: Library not loaded` | Set `DYLD_LIBRARY_PATH=/usr/local/lib` or install to `/usr/local` |
+| **Linux:** `cannot open shared object file` | Run `sudo ldconfig` or set `LD_LIBRARY_PATH=/usr/local/lib` |
+| **Windows:** `fyers-api-c.dll was not found` | Add `bin/` to PATH or copy DLL next to your executable |
+| **Missing dependencies** | Linux: install `-dev` packages; macOS: Homebrew; Windows: vcpkg |
 
-If CMake fails to find dependencies:
-- Linux: Ensure development packages are installed (`-dev` suffix)
-- macOS: Check Homebrew installation paths
-- Windows: Verify vcpkg integration
+## Release Notes
 
+* Cross-platform support (macOS, Linux, Windows)
+* Shared library with proper symbol export for Windows DLL
+* CMake package config for `find_package(fyers-api-c)`
+* Smart Orders and Smart Exits API support

@@ -14,18 +14,53 @@ option(BUILD_EXAMPLES "Build example programs (for testing only; excluded from p
 option(BUILD_TESTS "Build tests" OFF)
 
 # Find required packages
-find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
 find_package(OpenSSL REQUIRED)
 
-# Find cJSON via pkg-config (cjson on newer systems, libcjson on some)
-pkg_search_module(CJSON REQUIRED IMPORTED_TARGET cjson libcjson)
+# Find cJSON: pkg-config on Unix, find_package on Windows (vcpkg)
+if(WIN32)
+    find_package(cjson CONFIG QUIET)
+    if(cjson_FOUND)
+        set(CJSON_TARGET cjson::cjson)
+    else()
+        find_package(PkgConfig QUIET)
+        if(PkgConfig_FOUND)
+            pkg_search_module(CJSON cjson libcjson)
+            if(CJSON_FOUND)
+                pkg_search_module(CJSON REQUIRED IMPORTED_TARGET cjson libcjson)
+                set(CJSON_TARGET PkgConfig::CJSON)
+            endif()
+        endif()
+    endif()
+    if(NOT CJSON_TARGET)
+        message(FATAL_ERROR "cJSON not found. On Windows, use vcpkg: vcpkg install cjson")
+    endif()
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(CJSON REQUIRED IMPORTED_TARGET cjson libcjson)
+    set(CJSON_TARGET PkgConfig::CJSON)
+endif()
 
-# Find or build libwebsockets from parent directory
+# Find libwebsockets
 set(LWS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../libwebsockets")
-if(EXISTS "${LWS_DIR}/CMakeLists.txt")
-    # Use libwebsockets from parent directory
+set(LWS_FOUND FALSE)
+if(WIN32)
+    find_package(libwebsockets CONFIG QUIET)
+    if(libwebsockets_FOUND)
+        set(LWS_FOUND TRUE)
+        set(LWS_TARGET libwebsockets::libwebsockets)
+    else()
+        find_package(LibWebSockets CONFIG QUIET)
+        if(LibWebSockets_FOUND)
+            set(LWS_FOUND TRUE)
+            set(LWS_TARGET LibWebSockets::LibWebSockets)
+        endif()
+    endif()
+endif()
+
+if(NOT LWS_FOUND AND EXISTS "${LWS_DIR}/CMakeLists.txt")
+    # Use libwebsockets from parent directory (Unix)
     set(LWS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/libwebsockets")
     set(LWS_INSTALL_DIR "${CMAKE_CURRENT_BINARY_DIR}/lws_install")
 
@@ -57,8 +92,11 @@ if(EXISTS "${LWS_DIR}/CMakeLists.txt")
 
     set(LWS_INCLUDE_DIR "${LWS_INSTALL_DIR}/include")
     set(LWS_LIBRARY "${LWS_INSTALL_DIR}/lib/libwebsockets.a")
-else()
-    # Try to find system-installed libwebsockets
+    set(LWS_TARGET "")
+endif()
+
+if(NOT LWS_FOUND AND NOT LWS_INCLUDE_DIR)
+    # Try system-installed libwebsockets (Unix)
     find_path(LWS_INCLUDE_DIR
         libwebsockets.h
         PATHS
@@ -75,10 +113,10 @@ else()
             /opt/local/lib
             /opt/homebrew/lib
     )
+endif()
 
-    if(NOT LWS_INCLUDE_DIR OR NOT LWS_LIBRARY)
-        message(FATAL_ERROR "libwebsockets not found. Please build libwebsockets in ../libwebsockets or install system package (e.g. libwebsockets-dev)")
-    endif()
+if(NOT LWS_TARGET AND (NOT LWS_INCLUDE_DIR OR NOT LWS_LIBRARY))
+    message(FATAL_ERROR "libwebsockets not found. Install libwebsockets-dev (Linux), libwebsockets (macOS), or libwebsockets (vcpkg on Windows)")
 endif()
 
 # Source files
@@ -93,8 +131,27 @@ set(FYERS_CORE_SOURCES
     src/fyers_order_ws.c
 )
 
-# Create shared library (libfyers-api-c.so on Linux, libfyers-api-c.dylib on macOS)
+# Create shared library
+# macOS: libfyers-api-c.dylib
+# Linux: libfyers-api-c.so
+# Windows: fyers-api-c.dll + fyers-api-c.lib
 add_library(fyers-api-c SHARED ${FYERS_CORE_SOURCES})
+
+# Windows: export symbols via FYERS_API macro
+target_compile_definitions(fyers-api-c PRIVATE FYERS_API_EXPORTS)
+
+# Shared library versioning
+set_target_properties(fyers-api-c PROPERTIES
+    VERSION ${PROJECT_VERSION}
+    SOVERSION 1
+)
+
+# macOS: install name for dynamic loader
+if(APPLE)
+    set_target_properties(fyers-api-c PROPERTIES
+        INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
+    )
+endif()
 
 if(EXISTS "${LWS_DIR}/CMakeLists.txt")
     add_dependencies(fyers-api-c libwebsockets_ext)
@@ -113,14 +170,19 @@ target_link_libraries(fyers-api-c PUBLIC
     OpenSSL::SSL
     OpenSSL::Crypto
     Threads::Threads
-    PkgConfig::CJSON
+    ${CJSON_TARGET}
 )
 
-target_link_libraries(fyers-api-c PRIVATE
-    ${LWS_LIBRARY}
-)
+if(LWS_TARGET)
+    target_link_libraries(fyers-api-c PUBLIC ${LWS_TARGET})
+else()
+    target_link_libraries(fyers-api-c PRIVATE ${LWS_LIBRARY})
+endif()
 
 # Install library and headers
+# LIBRARY: .so (Linux), .dylib (macOS)
+# ARCHIVE: .a (static), .lib (Windows import library)
+# RUNTIME: .dll (Windows)
 install(TARGETS fyers-api-c
     EXPORT fyers-api-c-targets
     LIBRARY DESTINATION lib
