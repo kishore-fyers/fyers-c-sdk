@@ -506,6 +506,64 @@ static void create_subscription_message(fyers_data_ws_t* ws, const char** symbol
     *size = offset;
 }
 
+// Create unsubscription message (request type 5, same format as subscribe but type 5)
+static void create_unsubscription_message(fyers_data_ws_t* ws, const char** symbols, size_t symbol_count, uint8_t* buffer, size_t* size) {
+    if (!ws || !symbols || symbol_count == 0 || !buffer || !size) {
+        return;
+    }
+
+    // Calculate total size needed (same layout as subscription)
+    size_t symbols_data_size = 2; /* symbol count */
+    for (size_t i = 0; i < symbol_count; i++) {
+        symbols_data_size += 1 + strlen(symbols[i]);
+    }
+
+    size_t total_size = 18 + symbols_data_size;
+
+    if (*size < total_size) {
+        *size = total_size;
+        return;
+    }
+
+    size_t offset = 0;
+
+    // Data length
+    uint16_t data_len = htons((uint16_t)(total_size - 2));
+    memcpy(buffer + offset, &data_len, 2);
+    offset += 2;
+
+    // Request type (5 = Unsubscribe)
+    buffer[offset++] = MSG_TYPE_UNSUBSCRIBE;
+
+    // Field count (2)
+    buffer[offset++] = 2;
+
+    // Field 1: Symbols data
+    buffer[offset++] = 1;
+    uint16_t field1_size = htons((uint16_t)symbols_data_size);
+    memcpy(buffer + offset, &field1_size, 2);
+    offset += 2;
+
+    // Symbol count (big-endian)
+    buffer[offset++] = (symbol_count >> 8) & 0xFF;
+    buffer[offset++] = symbol_count & 0xFF;
+
+    for (size_t i = 0; i < symbol_count; i++) {
+        size_t sym_len = strlen(symbols[i]);
+        buffer[offset++] = (uint8_t)sym_len;
+        memcpy(buffer + offset, symbols[i], sym_len);
+        offset += sym_len;
+    }
+
+    // Field 2: Channel number
+    buffer[offset++] = 2;
+    buffer[offset++] = 0;
+    buffer[offset++] = 1;
+    buffer[offset++] = (uint8_t)ws->channel_num;
+
+    *size = offset;
+}
+
 // Exchange segment mapping structure (from map.json exch_seg_dict)
 typedef struct {
     const char* code;  // e.g., "1010"
@@ -1592,6 +1650,35 @@ static int callback_fyers_data_ws(struct lws* wsi, enum lws_callback_reasons rea
                                 }
                             }
                             break;
+
+                        case MSG_TYPE_UNSUBSCRIBE:
+                            /* Unsubscription response - match Python __unsubscribe_resp */
+                            {
+                                size_t offset = 5;
+                                if (offset + 2 <= len) {
+                                    uint16_t field_length = ntohs(*(uint16_t*)(data + offset));
+                                    offset += 2;
+                                    if (offset + field_length <= len) {
+                                        char* string_val = (char*)malloc(field_length + 1);
+                                        if (string_val) {
+                                            memcpy(string_val, data + offset, field_length);
+                                            string_val[field_length] = '\0';
+
+                                            if (strcmp(string_val, "K") == 0) {
+                                                if (ws->on_message) {
+                                                    ws->on_message(ws, "{\"type\":\"unsub\",\"code\":200,\"message\":\"Unsubscribed\",\"s\":\"ok\"}");
+                                                }
+                                            } else {
+                                                if (ws->on_error) {
+                                                    ws->on_error(ws, 11012, "Unsubscribe failed");
+                                                }
+                                            }
+                                            free(string_val);
+                                        }
+                                    }
+                                }
+                            }
+                            break;
                     }
                 }
             }
@@ -1935,11 +2022,11 @@ void fyers_data_ws_close(fyers_data_ws_t* ws) {
 
 fyers_error_t fyers_data_ws_subscribe(
     fyers_data_ws_t* ws,
-                                           const char** symbols,
+    const char** symbols,
+    size_t symbol_count,
     fyers_data_type_t data_type,
     int channel) {
-        
-    size_t symbol_count = sizeof(symbols) / sizeof(symbols[0]);
+
     if (!ws || !symbols || symbol_count == 0) {
         return FYERS_ERROR_INVALID_PARAM;
     }
@@ -1991,13 +2078,76 @@ fyers_error_t fyers_data_ws_subscribe(
 
 fyers_error_t fyers_data_ws_unsubscribe(
     fyers_data_ws_t* ws,
-                                             const char** symbols,
+    const char** symbols,
     size_t symbol_count,
     fyers_data_type_t data_type,
     int channel) {
-    
-    // Similar to subscribe but with unsubscribe message type
-    // Implementation simplified for brevity
+
+    if (!ws || !symbols || symbol_count == 0) {
+        return FYERS_ERROR_INVALID_PARAM;
+    }
+    if (!ws->valid_token) {
+        if (ws->on_error) {
+            ws->on_error(ws, FYERS_ERROR_INVALID_PARAM, "Invalid token");
+        }
+        return FYERS_ERROR_INVALID_PARAM;
+    }
+
+    ws->channel_num = channel;
+    ws->data_type = data_type;
+
+    /* Convert symbols to HSM tokens (same as subscribe) */
+    symbol_map_t* hsm_map = NULL;
+    size_t hsm_count = 0;
+
+    fyers_error_t err = convert_symbols_to_hsm_tokens(ws, symbols, symbol_count, &hsm_map, &hsm_count);
+    if (err != FYERS_OK) {
+        return err;
+    }
+    if (hsm_count == 0) {
+        if (ws->on_error) {
+            ws->on_error(ws, -300, "No valid symbols to unsubscribe");
+        }
+        return FYERS_ERROR_INVALID_PARAM;
+    }
+
+    /* Send unsubscription in chunks of SUBSCRIPTION_CHUNK_SIZE (1500), matching Python */
+    for (size_t i = 0; i < hsm_count; i += SUBSCRIPTION_CHUNK_SIZE) {
+        size_t chunk_count = hsm_count - i;
+        if (chunk_count > SUBSCRIPTION_CHUNK_SIZE) {
+            chunk_count = SUBSCRIPTION_CHUNK_SIZE;
+        }
+
+        const char** chunk_tokens = (const char**)malloc(chunk_count * sizeof(char*));
+        if (!chunk_tokens) {
+            for (size_t j = 0; j < hsm_count; j++) {
+                free(hsm_map[j].symbol);
+                free(hsm_map[j].hsm_token);
+            }
+            free(hsm_map);
+            return FYERS_ERROR_MEMORY;
+        }
+        for (size_t k = 0; k < chunk_count; k++) {
+            chunk_tokens[k] = hsm_map[i + k].hsm_token;
+        }
+
+        uint8_t unsub_msg[65536];
+        size_t unsub_size = sizeof(unsub_msg);
+        create_unsubscription_message(ws, chunk_tokens, chunk_count, unsub_msg, &unsub_size);
+        free(chunk_tokens);
+
+        if (unsub_size > 0 && unsub_size <= sizeof(unsub_msg)) {
+            add_message_to_queue(ws, unsub_msg, unsub_size);
+        }
+    }
+
+    /* Free the temporary HSM map (we don't keep it for unsub) */
+    for (size_t i = 0; i < hsm_count; i++) {
+        free(hsm_map[i].symbol);
+        free(hsm_map[i].hsm_token);
+    }
+    free(hsm_map);
+
     return FYERS_OK;
 }
 
