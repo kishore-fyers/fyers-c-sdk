@@ -60,8 +60,9 @@ void on_connect(fyers_data_ws_t* ws) {
         "NSE:SBIN-EQ",
         "NSE:ADANIENT-EQ"
     };
-    
-    fyers_data_ws_subscribe(ws, symbols, FYERS_DATA_TYPE_SYMBOL_UPDATE, 11);
+
+    size_t symbols_count = sizeof(symbols) / sizeof(symbols[0]);
+    fyers_data_ws_subscribe(ws, symbols, symbols_count, FYERS_DATA_TYPE_SYMBOL_UPDATE, 11);
 }
 
 void on_close(fyers_data_ws_t* ws, const char* reason) {
