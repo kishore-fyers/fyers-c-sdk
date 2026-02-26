@@ -21,6 +21,7 @@
 
 // Forward declarations
 struct fyers_order_ws;
+static void* order_reconnection_thread(void* arg);
 
 // Main WebSocket structure
 struct fyers_order_ws {
@@ -53,9 +54,11 @@ struct fyers_order_ws {
     // Threading
     pthread_t ws_thread;
     pthread_t ping_thread;
+    pthread_t reconnect_thread;
     pthread_mutex_t ws_mutex;
     bool thread_running;
     bool ping_thread_started;
+    bool reconnect_thread_active;
     
     // Logger
     fyers_logger_t* logger;
@@ -379,13 +382,15 @@ static int callback_fyers_order_ws(struct lws* wsi, enum lws_callback_reasons re
             
         case LWS_CALLBACK_CLIENT_ESTABLISHED:
             ws->connected = true;
-            ws->lws_wsi = wsi;  // Ensure wsi is set
+            ws->lws_wsi = wsi;
             ws->reconnect_attempts = 0;
             ws->reconnect_delay = 0;
             
-            // Start ping thread after connection established (matching Python __on_open)
-            ws->ping_thread_started = true;
-            pthread_create(&ws->ping_thread, NULL, ping_thread_order, ws);
+            // Start ping thread only on first connection (reused on reconnect)
+            if (!ws->ping_thread_started) {
+                pthread_create(&ws->ping_thread, NULL, ping_thread_order, ws);
+                ws->ping_thread_started = true;
+            }
             break;
             
         case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -419,25 +424,43 @@ static int callback_fyers_order_ws(struct lws* wsi, enum lws_callback_reasons re
             
         case LWS_CALLBACK_CLIENT_CLOSED:
             ws->connected = false;
-            if (ws->on_close) {
-                ws->on_close(ws, "Connection closed");
+            ws->lws_wsi = NULL;
+            
+            if (ws->on_error) {
+                ws->on_error(ws, "Connection to remote host was lost.");
             }
             
-            // Handle reconnection
-            if (ws->should_reconnect && ws->reconnect_attempts < ws->max_reconnect_attempts) {
-                ws->reconnect_attempts++;
-                if (ws->reconnect_attempts % 5 == 0) {
-                    ws->reconnect_delay += 5;
+            if (ws->restart_flag && ws->reconnect_attempts < ws->max_reconnect_attempts) {
+                ws->reconnect_thread_active = true;
+                if (pthread_create(&ws->reconnect_thread, NULL, order_reconnection_thread, ws) != 0) {
+                    ws->reconnect_thread_active = false;
+                    if (ws->on_close) {
+                        ws->on_close(ws, "Connection closed");
+                    }
                 }
-                sleep(ws->reconnect_delay);
-                // Reconnection would be handled by the main thread
+            } else {
+                if (ws->restart_flag && ws->reconnect_attempts >= ws->max_reconnect_attempts) {
+                    if (ws->logger) {
+                        fyers_logger_info(ws->logger, "Max reconnect attempts reached. Connection abandoned.");
+                    }
+                }
+                if (ws->on_close) {
+                    ws->on_close(ws, "Connection closed");
+                }
             }
             break;
             
         case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
             ws->connected = false;
+            ws->lws_wsi = NULL;
             if (ws->on_error) {
                 ws->on_error(ws, "Connection error");
+            }
+            if (ws->restart_flag && ws->reconnect_attempts < ws->max_reconnect_attempts) {
+                ws->reconnect_thread_active = true;
+                if (pthread_create(&ws->reconnect_thread, NULL, order_reconnection_thread, ws) != 0) {
+                    ws->reconnect_thread_active = false;
+                }
             }
             break;
             
@@ -463,6 +486,99 @@ static struct lws_protocols order_protocols[] = {
     },
     { NULL, NULL, 0, 0 }
 };
+
+// Create new client connection for order WS (reuses existing lws_context)
+static struct lws* create_order_client_connection(fyers_order_ws_t* ws) {
+    if (!ws || !ws->lws_context) return NULL;
+    
+    struct lws_client_connect_info ccinfo;
+    memset(&ccinfo, 0, sizeof(ccinfo));
+    ccinfo.context = ws->lws_context;
+    ccinfo.address = "socket.fyers.in";
+    ccinfo.port = 443;
+    ccinfo.path = "/trade/v3";
+    ccinfo.host = "socket.fyers.in";
+    ccinfo.origin = "socket.fyers.in";
+    ccinfo.protocol = "";  // Empty protocol - let server negotiate (matching Python)
+    ccinfo.ssl_connection = LCCSCF_USE_SSL | LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK;
+    ccinfo.userdata = ws;
+    
+    return lws_client_connect_via_info(&ccinfo);
+}
+
+// Reconnection thread - matches Python __on_close reconnect logic
+static void* order_reconnection_thread(void* arg) {
+    fyers_order_ws_t* ws = (fyers_order_ws_t*)arg;
+    if (!ws) return NULL;
+    
+    int attempt_num = ws->reconnect_attempts + 1;  // 1-based for display (matching Python)
+    
+    // Log "Attempting reconnect X of Y" (matching Python)
+    if (ws->logger) {
+        if (ws->write_to_file) {
+            fyers_logger_debug(ws->logger, "Attempting reconnect %d of %d...", attempt_num, ws->max_reconnect_attempts);
+        } else {
+            fyers_logger_info(ws->logger, "Attempting reconnect %d of %d...", attempt_num, ws->max_reconnect_attempts);
+        }
+    }
+    
+    // Python: if (reconnect_attempts) % 5 == 0: reconnect_delay += 5
+    if ((ws->reconnect_attempts % 5) == 0) {
+        ws->reconnect_delay += 5;
+    }
+    
+    // Python: time.sleep(reconnect_delay)
+    sleep((unsigned int)ws->reconnect_delay);
+    
+    if (!ws->thread_running || !ws->restart_flag) {
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Python: reconnect_attempts += 1
+    ws->reconnect_attempts++;
+    
+    // Python: self.connect()
+    struct lws* new_wsi = create_order_client_connection(ws);
+    if (!new_wsi) {
+        if (ws->on_error) {
+            ws->on_error(ws, "Reconnection failed");
+        }
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Wait for connection (up to 30 seconds)
+    int wait_count = 0;
+    while (ws->thread_running && wait_count < 300) {
+        usleep(100000);
+        wait_count++;
+        if (ws->connected) break;
+    }
+    
+    if (!ws->connected || !ws->thread_running) {
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Python: connect() waits 2 seconds then calls on_open()
+    sleep(2);
+    
+    if (!ws->thread_running) {
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    ws->reconnect_attempts = 0;
+    ws->reconnect_delay = 0;
+    
+    if (ws->on_connect) {
+        ws->on_connect(ws);
+    }
+    
+    ws->reconnect_thread_active = false;
+    return NULL;
+}
 
 // WebSocket service thread
 static void* ws_service_thread_order(void* arg) {
@@ -515,6 +631,7 @@ fyers_order_ws_t* fyers_order_ws_create(
     ws->connected = false;
     ws->thread_running = true;
     ws->ping_thread_started = false;
+    ws->reconnect_thread_active = false;
     
     // Initialize mutex
     pthread_mutex_init(&ws->ws_mutex, NULL);
@@ -542,6 +659,10 @@ void fyers_order_ws_destroy(fyers_order_ws_t* ws) {
     // Ping thread is only started after connection established
     if (ws->ping_thread_started) {
         pthread_join(ws->ping_thread, NULL);
+    }
+    if (ws->reconnect_thread_active) {
+        pthread_join(ws->reconnect_thread, NULL);
+        ws->reconnect_thread_active = false;
     }
     
     // Cleanup resources
@@ -802,7 +923,8 @@ void fyers_order_ws_keep_running(fyers_order_ws_t* ws) {
         return;
     }
     
-    while (ws->thread_running && ws->connected) {
+    /* Block until close/destroy - do NOT exit on disconnect so reconnection can retry up to 50 times */
+    while (ws->thread_running) {
         sleep(1);
     }
 }
