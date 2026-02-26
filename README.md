@@ -419,7 +419,7 @@ sudo make install  # Linux/macOS
 ```bash
 cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DBUILD_EXAMPLES=ON \
+    -DBUILD_EXAMPLES=OFF \
     -DBUILD_TESTS=OFF
 ```
 
