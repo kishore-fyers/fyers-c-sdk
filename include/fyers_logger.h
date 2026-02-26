@@ -22,7 +22,7 @@ typedef struct fyers_logger fyers_logger_t;
  * @param log_path Path to log file (NULL for stdout)
  * @return Logger instance or NULL on error
  */
-fyers_logger_t* fyers_logger_create(const char* service_name, 
+FYERS_API fyers_logger_t* fyers_logger_create(const char* service_name, 
                                      fyers_log_level_t level,
                                      const char* log_path);
 
@@ -30,27 +30,27 @@ fyers_logger_t* fyers_logger_create(const char* service_name,
  * @brief Destroy logger instance
  * @param logger Logger instance
  */
-void fyers_logger_destroy(fyers_logger_t* logger);
+FYERS_API void fyers_logger_destroy(fyers_logger_t* logger);
 
 /**
  * @brief Log error message
  */
-void fyers_logger_error(fyers_logger_t* logger, const char* format, ...);
+FYERS_API void fyers_logger_error(fyers_logger_t* logger, const char* format, ...);
 
 /**
  * @brief Log warning message
  */
-void fyers_logger_warning(fyers_logger_t* logger, const char* format, ...);
+FYERS_API void fyers_logger_warning(fyers_logger_t* logger, const char* format, ...);
 
 /**
  * @brief Log info message
  */
-void fyers_logger_info(fyers_logger_t* logger, const char* format, ...);
+FYERS_API void fyers_logger_info(fyers_logger_t* logger, const char* format, ...);
 
 /**
  * @brief Log debug message
  */
-void fyers_logger_debug(fyers_logger_t* logger, const char* format, ...);
+FYERS_API void fyers_logger_debug(fyers_logger_t* logger, const char* format, ...);
 
 #ifdef __cplusplus
 }

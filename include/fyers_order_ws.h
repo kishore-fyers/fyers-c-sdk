@@ -41,7 +41,7 @@ typedef void (*fyers_order_ws_on_close_t)(fyers_order_ws_t* ws, const char* reas
  * @param reconnect_retry Maximum number of reconnection attempts
  * @return WebSocket instance or NULL on error
  */
-fyers_order_ws_t* fyers_order_ws_create(
+FYERS_API fyers_order_ws_t* fyers_order_ws_create(
     const char* access_token,
     bool write_to_file,
     const char* log_path,
@@ -60,20 +60,20 @@ fyers_order_ws_t* fyers_order_ws_create(
  * @brief Destroy WebSocket instance
  * @param ws WebSocket instance
  */
-void fyers_order_ws_destroy(fyers_order_ws_t* ws);
+FYERS_API void fyers_order_ws_destroy(fyers_order_ws_t* ws);
 
 /**
  * @brief Connect to the WebSocket server
  * @param ws WebSocket instance
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws);
+FYERS_API fyers_error_t fyers_order_ws_connect(fyers_order_ws_t* ws);
 
 /**
  * @brief Close the WebSocket connection
  * @param ws WebSocket instance
  */
-void fyers_order_ws_close(fyers_order_ws_t* ws);
+FYERS_API void fyers_order_ws_close(fyers_order_ws_t* ws);
 
 /**
  * @brief Subscribe to data types
@@ -81,7 +81,7 @@ void fyers_order_ws_close(fyers_order_ws_t* ws);
  * @param data_types Comma-separated string of data types: "OnOrders", "OnTrades", "OnPositions", "OnGeneral"
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_order_ws_subscribe(fyers_order_ws_t* ws, const char* data_types);
+FYERS_API fyers_error_t fyers_order_ws_subscribe(fyers_order_ws_t* ws, const char* data_types);
 
 /**
  * @brief Unsubscribe from data types
@@ -89,20 +89,20 @@ fyers_error_t fyers_order_ws_subscribe(fyers_order_ws_t* ws, const char* data_ty
  * @param data_types Comma-separated string of data types to unsubscribe from
  * @return FYERS_OK on success, error code otherwise
  */
-fyers_error_t fyers_order_ws_unsubscribe(fyers_order_ws_t* ws, const char* data_types);
+FYERS_API fyers_error_t fyers_order_ws_unsubscribe(fyers_order_ws_t* ws, const char* data_types);
 
 /**
  * @brief Check if WebSocket is connected
  * @param ws WebSocket instance
  * @return true if connected, false otherwise
  */
-bool fyers_order_ws_is_connected(fyers_order_ws_t* ws);
+FYERS_API bool fyers_order_ws_is_connected(fyers_order_ws_t* ws);
 
 /**
  * @brief Keep the WebSocket running (blocks until closed)
  * @param ws WebSocket instance
  */
-void fyers_order_ws_keep_running(fyers_order_ws_t* ws);
+FYERS_API void fyers_order_ws_keep_running(fyers_order_ws_t* ws);
 
 #ifdef __cplusplus
 }

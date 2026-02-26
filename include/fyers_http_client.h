@@ -15,25 +15,25 @@ extern "C" {
 
 typedef struct fyers_http_client fyers_http_client_t;
 
-fyers_http_client_t* fyers_http_client_create(fyers_logger_t* api_logger,
+FYERS_API fyers_http_client_t* fyers_http_client_create(fyers_logger_t* api_logger,
                                                fyers_logger_t* request_logger);
-void fyers_http_client_destroy(fyers_http_client_t* client);
-fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
+FYERS_API void fyers_http_client_destroy(fyers_http_client_t* client);
+FYERS_API fyers_response_t* fyers_http_client_get(fyers_http_client_t* client,
                                          const char* url,
                                          const char* header);
-fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
+FYERS_API fyers_response_t* fyers_http_client_post(fyers_http_client_t* client,
                                           const char* url,
                                           const char* header,
                                           const char* data);
-fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
+FYERS_API fyers_response_t* fyers_http_client_patch(fyers_http_client_t* client,
                                            const char* url,
                                            const char* header,
                                            const char* data);
-fyers_response_t* fyers_http_client_delete(fyers_http_client_t* client,
+FYERS_API fyers_response_t* fyers_http_client_delete(fyers_http_client_t* client,
                                             const char* url,
                                             const char* header,
                                             const char* data);
-fyers_response_t* fyers_http_client_put(fyers_http_client_t* client,
+FYERS_API fyers_response_t* fyers_http_client_put(fyers_http_client_t* client,
                                          const char* url,
                                          const char* header,
                                          const char* data);

@@ -168,6 +168,16 @@ struct fyers_data_ws {
     
     // Update tracking
     bool update_tick;
+    
+    // Reconnection thread (spawned on close when restart_flag)
+    pthread_t reconnect_thread;
+    bool reconnect_thread_active;
+    
+    // Last subscription for auto resubscribe after reconnect (matching Python: user subscribes in on_connect)
+    char** last_subscription_symbols;
+    size_t last_subscription_count;
+    fyers_data_type_t last_subscription_data_type;
+    int last_subscription_channel;
 };
 
 // Base64 decoding utility
@@ -1468,6 +1478,247 @@ static fyers_error_t convert_symbols_to_hsm_tokens(fyers_data_ws_t* ws, const ch
     return FYERS_OK;
 }
 
+// Free last subscription storage
+static void free_last_subscription(fyers_data_ws_t* ws) {
+    if (!ws || !ws->last_subscription_symbols) return;
+    for (size_t i = 0; i < ws->last_subscription_count; i++) {
+        free(ws->last_subscription_symbols[i]);
+    }
+    free(ws->last_subscription_symbols);
+    ws->last_subscription_symbols = NULL;
+    ws->last_subscription_count = 0;
+}
+
+// Resubscribe using stored symbols with retry (for network stability after reconnect)
+static fyers_error_t resubscribe_with_retry(fyers_data_ws_t* ws) {
+    if (!ws || !ws->last_subscription_symbols || ws->last_subscription_count == 0) {
+        return FYERS_ERROR_INVALID_PARAM;
+    }
+    const int max_retries = 3;
+    const int retry_delay_sec = 2;
+    
+    for (int attempt = 0; attempt < max_retries; attempt++) {
+        if (!ws->thread_running) return FYERS_ERROR;
+        
+        if (attempt > 0) {
+            sleep(retry_delay_sec);
+        }
+        
+        ws->data_type = ws->last_subscription_data_type;
+        symbol_map_t* hsm_map = NULL;
+        size_t hsm_count = 0;
+        fyers_error_t err = convert_symbols_to_hsm_tokens(ws,
+            (const char**)ws->last_subscription_symbols,
+            ws->last_subscription_count,
+            &hsm_map, &hsm_count);
+        
+        if (err == FYERS_OK && hsm_count > 0) {
+            const char** hsm_tokens = (const char**)malloc(hsm_count * sizeof(char*));
+            if (!hsm_tokens) {
+                for (size_t i = 0; i < hsm_count; i++) {
+                    free(hsm_map[i].symbol);
+                    free(hsm_map[i].hsm_token);
+                }
+                free(hsm_map);
+                return FYERS_ERROR_MEMORY;
+            }
+            for (size_t i = 0; i < hsm_count; i++) {
+                hsm_tokens[i] = hsm_map[i].hsm_token;
+            }
+            
+            uint8_t sub_msg[65536];
+            size_t sub_size = sizeof(sub_msg);
+            ws->channel_num = ws->last_subscription_channel;
+            create_subscription_message(ws, hsm_tokens, hsm_count, sub_msg, &sub_size);
+            add_message_to_queue(ws, sub_msg, sub_size);
+            
+            ws->symbol_token_map = hsm_map;
+            ws->symbol_token_count = hsm_count;
+            free(hsm_tokens);
+            return FYERS_OK;
+        }
+        
+        if (hsm_map && hsm_count > 0) {
+            for (size_t i = 0; i < hsm_count; i++) {
+                free(hsm_map[i].symbol);
+                free(hsm_map[i].hsm_token);
+            }
+            free(hsm_map);
+        }
+    }
+    return FYERS_ERROR_NETWORK;
+}
+
+// Clear state before reconnect (matching Python: scrips_per_channel, symbol_token)
+static void clear_reconnect_state(fyers_data_ws_t* ws) {
+    if (!ws) return;
+    
+    pthread_mutex_lock(&ws->ws_mutex);
+    
+    // Clear symbol token map
+    for (size_t i = 0; i < ws->symbol_token_count; i++) {
+        free(ws->symbol_token_map[i].symbol);
+        free(ws->symbol_token_map[i].hsm_token);
+    }
+    free(ws->symbol_token_map);
+    ws->symbol_token_map = NULL;
+    ws->symbol_token_count = 0;
+    
+    // Clear scrips per channel (matching Python: self.scrips_per_channel[self.channel_num] = [])
+    if (ws->scrips_per_channel) {
+        for (int i = 0; i < 31; i++) {
+            ws->scrips_per_channel[i] = 0;
+        }
+    }
+    
+    // Clear topic mappings (new connection may have different topic IDs)
+    for (size_t i = 0; i < ws->scrips_sym_count; i++) {
+        free(ws->scrips_sym[i].hsm_token);
+    }
+    free(ws->scrips_sym);
+    ws->scrips_sym = NULL;
+    ws->scrips_sym_count = 0;
+    ws->scrips_sym_capacity = 0;
+    
+    for (size_t i = 0; i < ws->index_sym_count; i++) {
+        free(ws->index_sym[i].hsm_token);
+    }
+    free(ws->index_sym);
+    ws->index_sym = NULL;
+    ws->index_sym_count = 0;
+    ws->index_sym_capacity = 0;
+    
+    for (size_t i = 0; i < ws->dp_sym_count; i++) {
+        free(ws->dp_sym[i].hsm_token);
+    }
+    free(ws->dp_sym);
+    ws->dp_sym = NULL;
+    ws->dp_sym_count = 0;
+    ws->dp_sym_capacity = 0;
+    
+    // Clear response map
+    for (size_t i = 0; i < ws->resp_map_count; i++) {
+        free(ws->resp_map[i].hsm_token);
+        cJSON_Delete(ws->resp_map[i].data);
+    }
+    free(ws->resp_map);
+    ws->resp_map = NULL;
+    ws->resp_map_count = 0;
+    ws->resp_map_capacity = 0;
+    
+    pthread_mutex_unlock(&ws->ws_mutex);
+}
+
+// Create new client connection (reuses existing lws_context)
+static struct lws* create_client_connection(fyers_data_ws_t* ws) {
+    if (!ws || !ws->lws_context) return NULL;
+    
+    struct lws_client_connect_info ccinfo;
+    memset(&ccinfo, 0, sizeof(ccinfo));
+    ccinfo.context = ws->lws_context;
+    ccinfo.address = "socket.fyers.in";
+    ccinfo.port = 443;
+    ccinfo.path = "/hsm/v1-5/prod";
+    ccinfo.host = "socket.fyers.in";
+    ccinfo.origin = "socket.fyers.in";
+    ccinfo.protocol = "";  // Empty protocol - let server negotiate (matching Python)
+    ccinfo.ssl_connection = LCCSCF_USE_SSL | LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK;
+    ccinfo.userdata = ws;
+    
+    return lws_client_connect_via_info(&ccinfo);
+}
+
+// Reconnection thread - matches Python __on_close reconnect logic
+static void* reconnection_thread(void* arg) {
+    fyers_data_ws_t* ws = (fyers_data_ws_t*)arg;
+    if (!ws) return NULL;
+    
+    int attempt_num = ws->reconnect_attempts + 1;  // 1-based for display (matching Python)
+    
+    // Log "Attempting reconnect X of Y" (matching Python)
+    if (ws->logger) {
+        if (ws->write_to_file) {
+            fyers_logger_debug(ws->logger, "Attempting reconnect %d of %d...", attempt_num, ws->max_reconnect_attempts);
+        } else {
+            fyers_logger_info(ws->logger, "Attempting reconnect %d of %d...", attempt_num, ws->max_reconnect_attempts);
+        }
+    }
+    
+    // Python: if (reconnect_attempts) % 5 == 0: reconnect_delay += 5
+    if ((ws->reconnect_attempts % 5) == 0) {
+        ws->reconnect_delay += 5;
+    }
+    
+    // Python: time.sleep(reconnect_delay)
+    sleep((unsigned int)ws->reconnect_delay);
+    
+    // Check if we should abort (e.g. close_connection was called)
+    if (!ws->thread_running || !ws->restart_flag) {
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Python: reconnect_attempts += 1
+    ws->reconnect_attempts++;
+    
+    // Python: clear state
+    clear_reconnect_state(ws);
+    
+    // Python: self.connect() -> create new connection
+    struct lws* new_wsi = create_client_connection(ws);
+    if (!new_wsi) {
+        if (ws->on_error) {
+            ws->on_error(ws, -1, "Reconnection failed");
+        }
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Wait for connection to establish (up to 30 seconds)
+    int wait_count = 0;
+    while (ws->thread_running && wait_count < 300) {
+        usleep(100000);  // 100ms
+        wait_count++;
+        if (ws->connected) break;
+    }
+    
+    if (!ws->connected || !ws->thread_running) {
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Python: connect() waits 2 seconds then calls on_open()
+    sleep(2);
+    
+    if (!ws->thread_running) {
+        ws->reconnect_thread_active = false;
+        return NULL;
+    }
+    
+    // Reset reconnect state on successful reconnect (matching Python __on_open)
+    ws->reconnect_attempts = 0;
+    ws->reconnect_delay = 0;
+    
+    // Auto resubscribe with retry - network may need time to stabilize after reconnect
+    // (Python: user subscribes in on_connect; we store and retry to handle CURL/HTTP flakiness)
+    if (ws->last_subscription_symbols && ws->last_subscription_count > 0) {
+        sleep(1);  // Extra delay for network stability
+        if (ws->thread_running && resubscribe_with_retry(ws) != FYERS_OK) {
+            if (ws->on_error) {
+                ws->on_error(ws, -1, "Re-subscribe failed after reconnect");
+            }
+        }
+    }
+    
+    // Call on_connect so user can do additional setup (matching Python flow)
+    if (ws->thread_running && ws->on_connect) {
+        ws->on_connect(ws);
+    }
+    
+    ws->reconnect_thread_active = false;
+    return NULL;
+}
+
 // WebSocket protocol callbacks
 static int callback_fyers_data_ws(struct lws* wsi, enum lws_callback_reasons reason,
                                    void* user, void* in, size_t len) {
@@ -1481,6 +1732,10 @@ static int callback_fyers_data_ws(struct lws* wsi, enum lws_callback_reasons rea
         case LWS_CALLBACK_CLIENT_ESTABLISHED:
             ws->connected = true;
             ws->lws_wsi = wsi;  // Ensure wsi is set
+            
+            // Reset reconnect state on successful connection (matching Python __on_open)
+            ws->reconnect_attempts = 0;
+            ws->reconnect_delay = 0;
             
             // Send authentication message
             {
@@ -1686,25 +1941,48 @@ static int callback_fyers_data_ws(struct lws* wsi, enum lws_callback_reasons rea
             
         case LWS_CALLBACK_CLIENT_CLOSED:
             ws->connected = false;
-            if (ws->on_close) {
-                ws->on_close(ws, "Connection closed");
+            ws->lws_wsi = NULL;
+            
+            // Notify user of connection loss (matching Python "Error: Connection to remote host was lost")
+            if (ws->on_error) {
+                ws->on_error(ws, -1, "Connection to remote host was lost.");
             }
             
-            // Handle reconnection
-            if (ws->should_reconnect && ws->reconnect_attempts < ws->max_reconnect_attempts) {
-                ws->reconnect_attempts++;
-                if (ws->reconnect_attempts % 5 == 0) {
-                    ws->reconnect_delay += 5;
+            // Handle reconnection (matching Python __on_close)
+            if (ws->restart_flag && ws->reconnect_attempts < ws->max_reconnect_attempts) {
+                // Spawn reconnection thread - do NOT block in callback
+                ws->reconnect_thread_active = true;
+                if (pthread_create(&ws->reconnect_thread, NULL, reconnection_thread, ws) != 0) {
+                    ws->reconnect_thread_active = false;
+                    if (ws->on_close) {
+                        ws->on_close(ws, "Connection closed");
+                    }
                 }
-                sleep(ws->reconnect_delay);
-                // Reconnection would be handled by the main thread
+                // Note: on_close is NOT called when reconnecting (matching Python)
+            } else {
+                if (ws->restart_flag && ws->reconnect_attempts >= ws->max_reconnect_attempts) {
+                    if (ws->logger) {
+                        fyers_logger_info(ws->logger, "Max reconnect attempts reached. Connection abandoned.");
+                    }
+                }
+                if (ws->on_close) {
+                    ws->on_close(ws, "Connection closed");
+                }
             }
             break;
             
         case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
             ws->connected = false;
+            ws->lws_wsi = NULL;
             if (ws->on_error) {
                 ws->on_error(ws, -1, "Connection error");
+            }
+            // Same reconnection logic as CLOSED (matching Python)
+            if (ws->restart_flag && ws->reconnect_attempts < ws->max_reconnect_attempts) {
+                ws->reconnect_thread_active = true;
+                if (pthread_create(&ws->reconnect_thread, NULL, reconnection_thread, ws) != 0) {
+                    ws->reconnect_thread_active = false;
+                }
             }
             break;
             
@@ -1784,6 +2062,7 @@ fyers_data_ws_t* fyers_data_ws_create(
     ws->restart_flag = reconnect;
     ws->connected = false;
     ws->thread_running = true;
+    ws->reconnect_thread_active = false;
     
     // Initialize mutexes
     pthread_mutex_init(&ws->ws_mutex, NULL);
@@ -1813,6 +2092,9 @@ fyers_data_ws_t* fyers_data_ws_create(
     ws->active_channel = 0;
     ws->scrips_per_channel = (int*)calloc(31, sizeof(int));
     ws->update_tick = false;
+    
+    ws->last_subscription_symbols = NULL;
+    ws->last_subscription_count = 0;
     
     // Extract HSM token
     if (extract_hsm_token(access_token, &ws->hsm_token) != 0) {
@@ -1855,6 +2137,10 @@ void fyers_data_ws_destroy(fyers_data_ws_t* ws) {
     if (ws->message_thread) {
         pthread_join(ws->message_thread, NULL);
     }
+    if (ws->reconnect_thread_active) {
+        pthread_join(ws->reconnect_thread, NULL);
+        ws->reconnect_thread_active = false;
+    }
     
     // Cleanup message queue
     pthread_mutex_lock(&ws->message_mutex);
@@ -1878,6 +2164,8 @@ void fyers_data_ws_destroy(fyers_data_ws_t* ws) {
         free(ws->symbol_token_map[i].hsm_token);
     }
     free(ws->symbol_token_map);
+    
+    free_last_subscription(ws);
     
     // Cleanup topic mappings
     for (size_t i = 0; i < ws->scrips_sym_count; i++) {
@@ -2034,6 +2322,18 @@ fyers_error_t fyers_data_ws_subscribe(
     ws->channel_num = channel;
     ws->data_type = data_type;  // Store data type for symbol conversion
     
+    // Store for auto resubscribe after reconnect (matching Python: user subscribes in on_connect)
+    free_last_subscription(ws);
+    ws->last_subscription_symbols = (char**)malloc(symbol_count * sizeof(char*));
+    if (ws->last_subscription_symbols) {
+        for (size_t i = 0; i < symbol_count; i++) {
+            ws->last_subscription_symbols[i] = strdup(symbols[i]);
+        }
+        ws->last_subscription_count = symbol_count;
+        ws->last_subscription_data_type = data_type;
+        ws->last_subscription_channel = channel;
+    }
+    
     // Convert symbols to HSM tokens
     symbol_map_t* hsm_map = NULL;
     size_t hsm_count = 0;
@@ -2174,7 +2474,8 @@ void fyers_data_ws_keep_running(fyers_data_ws_t* ws) {
         return;
     }
 
-    while (ws->thread_running && ws->connected) {
+    /* Block until close/destroy - do NOT exit on disconnect so reconnection can retry up to 50 times */
+    while (ws->thread_running) {
         sleep(1);
     }
 }
