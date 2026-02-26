@@ -91,14 +91,49 @@ If you have not installed the required packages yet, run:
 brew install cmake curl cjson openssl libwebsockets
 ```
 
-### Building
+### Building and Installing
+
+Build the shared library (`libfyers-api-c.so` on Linux, `libfyers-api-c.dylib` on macOS) and install it system-wide:
 
 ```bash
 mkdir build
 cd build
-cmake ..
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make
 sudo make install
+```
+
+To install to a custom location (e.g. `$HOME/.local`):
+
+```bash
+cmake .. -DCMAKE_INSTALL_PREFIX=$HOME/.local
+make
+make install
+```
+
+### Using the Installed Library
+
+After installation, you can use the library in your own projects:
+
+**With gcc/clang directly:**
+```bash
+gcc main.c -lfyers-api-c -o myapp
+```
+(All dependencies are propagated by the shared library; no need to specify -lcjson, -lcurl, etc.)
+
+**With CMake:**
+```cmake
+find_package(fyers-api-c REQUIRED)
+add_executable(myapp main.c)
+target_link_libraries(myapp PRIVATE fyers-api-c::fyers-api-c)
+```
+
+**Include headers:**
+```c
+#include <fyers_api.h>
+#include <fyers_model.h>
+#include <fyers_data_ws.h>
+#include <fyers_order_ws.h>
 ```
 
 ## Quick Start
@@ -374,7 +409,7 @@ brew install cmake curl cjson openssl libwebsockets
 ```bash
 mkdir build
 cd build
-cmake ..
+cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local
 make
 sudo make install  # Linux/macOS
 ```
@@ -383,7 +418,7 @@ sudo make install  # Linux/macOS
 
 ```bash
 cmake .. \
-    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DBUILD_EXAMPLES=ON \
     -DBUILD_TESTS=OFF
 ```

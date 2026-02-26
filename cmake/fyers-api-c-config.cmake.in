@@ -1,0 +1,10 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(CURL)
+find_dependency(OpenSSL)
+find_dependency(Threads)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(CJSON REQUIRED IMPORTED_TARGET cjson libcjson)
+
+include("${CMAKE_CURRENT_LIST_DIR}/fyers-api-c-targets.cmake")
