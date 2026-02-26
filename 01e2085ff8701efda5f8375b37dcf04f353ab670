@@ -1,0 +1,23 @@
+CMakeLists.txt
+  a0aae454ef1e9d17 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.37",
+  "base_commit_sha": "01e2085ff8701efda5f8375b37dcf04f353ab670",
+  "prompts": {
+    "a0aae454ef1e9d17": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "41882780-bcb7-4e11-af77-b1e837d99348",
+        "model": "default"
+      },
+      "human_author": "kishore-fyers <kishorekumar@fyers.in>",
+      "messages": [],
+      "total_additions": 18,
+      "total_deletions": 9,
+      "accepted_lines": 15,
+      "overriden_lines": 0
+    }
+  }
+}
