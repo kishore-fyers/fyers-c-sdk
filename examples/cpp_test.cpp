@@ -451,6 +451,32 @@ void fy_get_option_chain(fyers_session_t* session) {
     fyers_model_destroy(model);
 }
 
+void fy_get_orderbook_history(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "symbol", "NSE:MAZDOCK-EQ");
+    char* req_str = cJSON_PrintUnformatted(req);
+    printf("Getting fy_get_orderbook_by_order_id\n");
+    fyers_response_t* response = fyers_model_get_order_history(model, req_str);
+    if (response) printf("fy_get_orderbook_by_order_id response: %s\n", response->data ? response->data : "(null)");
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
+void fy_get_tradebook_history(fyers_session_t* session) {
+    fyers_model_t* model = create_model_from_session(session);
+    if (!model) return;
+    cJSON* req = cJSON_CreateObject();
+    cJSON_AddStringToObject(req, "symbol", "NSE:MAZDOCK-EQ");
+    char* req_str = cJSON_PrintUnformatted(req);
+    printf("Getting fy_get_tradebook_by_order_id\n");
+    fyers_response_t* response = fyers_model_get_trade_history(model, req_str);
+    if (response) printf("fy_get_tradebook_by_order_id response: %s\n", response->data ? response->data : "(null)");
+    fyers_response_destroy(response);
+    fyers_model_destroy(model);
+}
+
 int main() {
     // Replace with your app credentials
     const char* client_id = "Z0G0WQQT6T-101";
@@ -490,6 +516,10 @@ int main() {
     // fy_get_positions(session); // get positions
     // fy_get_tradebook(session); // get tradebook
     // fy_get_tradebook_by_order_tag(session); // get tradebook by order tag
+
+    //reports APIS
+    // fy_get_orderbook_history(session); // get orderbook history
+    // fy_get_tradebook_history(session); // get tradebook history
 
     // Order Placement
     // fy_place_order(session); // place order
